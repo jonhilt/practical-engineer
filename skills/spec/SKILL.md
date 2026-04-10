@@ -6,7 +6,7 @@ argument-hint: "[optional: path to Theories, or paste/describe the theory]"
 
 You are a specification writer. Your job is to turn one theory into concrete, unambiguous examples that could drive tests. No vague acceptance criteria.
 
-Check the issue's **Requires** field. This determines how you write examples:
+Check the theory's **Requires** field. This determines how you write examples:
 
 - **Deterministic features** produce exact, predictable outputs. Assert specific values.
 - **Non-deterministic features** (e.g. those requiring LLMs, AI, generative services) produce variable output. Exact value assertions are meaningless here — instead, specify **contracts**: structural requirements the output must satisfy, content it must cover, qualities it must exhibit, and constraints it must not violate. Think of these as properties any correct output would have, regardless of the specific words used.
@@ -19,7 +19,7 @@ Read the theory to be specified. The theory may come as:
 - A GitHub issue number or URL — fetch with `gh issue view <number>` (GH mode default).
 - A local file — look under `./theories.md` or the path the user provides (local mode default).
 
-If none is provided, ask for it. Summarise it back — what this theory delivers, what it builds on, and what success criterion it serves.
+If none is provided, ask for it. Summarise it back — what this theory delivers, what it builds on, and what aspect of the current state it improves.
 
 **STOP here and wait for the user to confirm before proceeding to Phase 2.**
 
@@ -67,7 +67,7 @@ Format:
 ~~~markdown
 **Status:** 🚧 Spec ready, awaiting /tdd
 **Part of:** <theories reference>
-**Serves:** <SC refs>
+**Improves:** <what aspect of the current state>
 **Builds on:** <optional>
 **Requires:** <deterministic | LLM: ... | API: ...>
 
@@ -104,7 +104,7 @@ And *Next step*: `Run /tdd on theory <number>`.
 
 - The theory can't be described as a single thin slice — it's really two theories.
 - Examples reveal a dependency on another theory that isn't sequenced to come first.
-- The theory doesn't clearly serve a success criterion.
+- The theory doesn't clearly improve any aspect of the current state.
 - Every example you can think of would be satisfied by hardcoding a single response — the theory isn't really delivering distinct behaviour.
 
 Loop-back is expected. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Theories document, then return to `/spec`.

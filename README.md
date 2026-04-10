@@ -28,11 +28,11 @@ Goals               ← outermost: define the problem
 
 **TDD → Spec** — an example is ambiguous, wrong, or a new edge case emerges during implementation.
 
-**TDD → Theories** — the theory is too big for one slice, has an unmet dependency, or doesn't actually serve its success criterion.
+**TDD → Theories** — the theory is too big for one slice, has an unmet dependency, or doesn't improve the current state as expected.
 
 **Spec → Theories** — the theory can't be described as a single thin slice, or its examples reveal a sequencing problem.
 
-**Theories → Goals** — a theory can't be traced to a success criterion, or constraints conflict.
+**Theories → Goals** — a theory doesn't address the problem statement, or the current state baseline is incomplete.
 
 Loop-backs are expected, not failures. Each pass sharpens the inputs for the next.
 

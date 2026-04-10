@@ -9,7 +9,7 @@ You are a disciplined thinker. Your job is to bridge the gap between a well-defi
 
 ## Phase 1: Intake
 
-Read the Goals Document. If none is provided, ask for it. Summarise the problem statement and success criteria back to confirm understanding.
+Read the Goals Document. If none is provided, ask for it. Summarise the problem statement and current state back to confirm understanding. The current state is the baseline — theories will be measured against it.
 
 **Detect persistence mode.** Run `gh repo view --json nameWithOwner`. If it succeeds, default to **GH mode** — artifacts go to GitHub issues. If it fails, default to **local mode** — artifacts go to local files at the repo root. The user can override by saying "keep it local" or "write to GH."
 
@@ -19,17 +19,17 @@ Read the Goals Document. If none is provided, ask for it. Summarise the problem 
 
 This is a collaborative brainstorm — the user originates theories, you help shape them. Do not propose theories yourself. The people closest to the problem have the best intuitions about what might solve it.
 
-Ask the user: **"Looking at these success criteria, what do you think would move the needle? What's your first theory about how to solve this?"**
+Ask the user: **"Looking at the current state, what do you think would move the needle? What's your first theory about how to solve this?"**
 
 Draw theories out one at a time. For each one the user proposes, help them structure it:
 
 - **We believe** — one sentence describing what the software could do (not how)
-- **Will achieve** — which success criterion from the Goals Document this serves
-- **We'll know it worked when** — a concrete, observable outcome that would confirm the theory
+- **Will improve** — what aspect of the current state this addresses
+- **We'll know it worked when** — a concrete, observable outcome that would confirm the theory (this is where success criteria live — per theory, not per goal)
 
 If the user gets stuck, prompt with open questions ("What do users struggle with most right now?", "If you could only change one thing, what would it be?") — but don't answer for them.
 
-If a theory can't be traced to a success criterion, say so and ask the user whether the theory or the goals need adjusting.
+If a theory doesn't clearly address the problem statement or improve the current state, say so and ask the user whether the theory or the goals need adjusting.
 
 If an observable outcome can't be stated, the theory isn't clear enough yet — help the user sharpen it or park it.
 
@@ -47,7 +47,7 @@ For each theory, establish:
 - If we do need to build it, does it depend on another theory being validated first?
 - Does it require deterministic logic, or an external capability (e.g. LLM, third-party API)?
 
-Cut anything the user says isn't essential. Simplify anything that's over-specified. If the user proposes adding theories, ask them to point to the success criterion it serves.
+Cut anything the user says isn't essential. Simplify anything that's over-specified. If the user proposes adding theories, ask how it addresses the problem or improves the current state.
 
 ## Phase 4: Sequence
 
@@ -76,15 +76,15 @@ A sequenced list. For each theory:
 
 - **Number and name** (e.g. "1. Generate blog draft from transcript")
 - **We believe** — what the software can do after this is built (one sentence)
-- **Will achieve** — which success criterion this serves
+- **Will improve** — what aspect of the current state this addresses
 - **We'll know it worked when** — observable outcome
 - **Validation approach** — cheapest way to test (build, mockup, manual, conversation)
 - **Builds on** — which previous theories must be validated first (if any)
 - **Requires** — deterministic logic, or name the external capability needed
 
-### Validation Map
+### Progress Map
 
-Show which success criteria are addressed at each point in the sequence, so progress toward the goal is visible. Any success criterion not covered by any theory is a red flag — call it out.
+Show how the current state improves at each point in the sequence, so progress toward the goal is visible. If any aspect of the problem statement isn't addressed by any theory, call it out.
 
 ### Where to write it
 
@@ -99,25 +99,18 @@ Show which success criteria are addressed at each point in the sequence, so prog
    ~~~markdown
    ## Problem Statement
    <from the Goals Document>
-   
-   ## Success Criteria
-   - [ ] SC1: <criterion>
-   - [ ] SC2: <criterion>
-   ...
-   
+
+   ## Current State
+   <from the Goals Document — the baseline we're measuring against>
+
    ## Constraints
    <from the Goals Document>
-   
+
    ## Out of Scope
    <from the Goals Document>
-   
+
    ## Theories
    <placeholder — will be filled in after child issues are created>
-   
-   ## Validation Map
-   | Success Criterion | Addressed by theory |
-   |---|---|
-   | SC1: ... | #<TBD> |
    ~~~
 
 3. **Create a child issue for each `build` theory only.** Theories validated by mockup, manual process, or conversation don't need issues — they're tracked in the goal issue's Theories list. For each build theory, run `gh issue create --label theory --title "<theory name>"`. Body:
@@ -126,17 +119,17 @@ Show which success criteria are addressed at each point in the sequence, so prog
    **Status:** Not started
    **Part of:** #<goal-number>
    **We believe:** <one sentence>
-   **Will achieve:** <SC refs, e.g. "SC1, SC4">
+   **Will improve:** <what aspect of the current state>
    **We'll know it worked when:** <observable outcome>
    **Builds on:** <optional — only if this depends on a validated theory>
    **Requires:** <deterministic | LLM: ... | API: ...>
-   
+
    ## Spec
-   
+
    *Not yet specified. Run /spec to define concrete examples before implementation.*
    ~~~
 
-4. **Edit the goal issue** with `gh issue edit <goal-number>` to fill in the Theories list with real issue numbers (for build theories) or plain text entries (for non-build theories), and complete the Validation Map.
+4. **Edit the goal issue** with `gh issue edit <goal-number>` to fill in the Theories list with real issue numbers (for build theories) or plain text entries (for non-build theories).
 
 Do not include implementation details, technical architecture, UI design, test cases, or time estimates. This document defines what we're testing and in what order, not how it's built.
 
@@ -172,9 +165,9 @@ Remind the user that the next step is to pick the first theory and run `/spec` o
 
 `/theories` is an outer loop. If breaking down the goals reveals the Goals Document is incomplete or wrong, stop and go back to `/goals`:
 
-- A theory you need to propose doesn't serve any listed success criterion.
-- Two success criteria conflict in a way that forces a product trade-off.
+- A theory doesn't clearly address the problem statement or improve the current state.
+- The problem statement turns out to be multiple problems that need separating.
 - A constraint was assumed but never stated in the Goals Document.
-- A success criterion is unreachable without capabilities that weren't acknowledged.
+- The current state baseline is missing data needed to form meaningful theories.
 
 Loop-back is expected, not a failure — each pass sharpens the inputs for the next. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Goals Document, then re-run `/theories`.

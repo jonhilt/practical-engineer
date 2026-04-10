@@ -175,7 +175,7 @@ Stop and go back to `/spec` if:
 Stop and go back to `/theories` if:
 - The theory is too large to complete as one thin slice — it needs to be split.
 - A dependency on another theory is revealed mid-implementation and blocks progress.
-- The theory, once built, clearly doesn't satisfy the success criterion it was meant to serve.
+- The theory, once built, clearly doesn't improve the aspect of the current state it was meant to address.
 
 When you loop back:
 1. Record the reason in `PROGRESS.md` → *Decisions not visible from code*.
