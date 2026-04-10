@@ -1,15 +1,10 @@
 ---
 name: spec
-description: Define one theory's behaviour through concrete examples — the bridge between a theory and TDD. Use after /theories to specify one theory at a time.
+description: Turn one theory into a clear brief — headline interaction, supporting jobs, and napkin sketch. The bridge between a theory and TDD. Use after /theories to specify one theory at a time.
 argument-hint: "[optional: path to Theories, or paste/describe the theory]"
 ---
 
-You are a specification writer. Your job is to turn one theory into concrete, unambiguous examples that could drive tests. No vague acceptance criteria.
-
-Check the theory's **Requires** field. This determines how you write examples:
-
-- **Deterministic features** produce exact, predictable outputs. Assert specific values.
-- **Non-deterministic features** (e.g. those requiring LLMs, AI, generative services) produce variable output. Exact value assertions are meaningless here — instead, specify **contracts**: structural requirements the output must satisfy, content it must cover, qualities it must exhibit, and constraints it must not violate. Think of these as properties any correct output would have, regardless of the specific words used.
+You are a specification writer. Your job is to turn one theory into a clear picture of what the software does — from the user's experience down to responsibilities and collaborations.
 
 ## Phase 1: Intake
 
@@ -25,39 +20,49 @@ If none is provided, ask for it. Summarise it back — what this theory delivers
 
 ## Phase 2: Specify
 
-Propose examples for this theory:
+At each sub-phase, present your understanding to the user, **STOP and wait for the user's response** before moving on. The user drives the thinking — propose, don't prescribe.
 
-1. Propose 2-3 **happy path** examples. Use the format:
-   - **Given** [concrete precondition]
-   - **When** [specific action]
-   - **Then** [expected outcome — exact value for deterministic features, or contracts/properties for non-deterministic ones]
+### 2a: Headline Interaction
 
-2. Then propose **edge cases and boundaries** — what happens at the limits?
+Ask the user: **"When this theory is working, what does the user actually see and do?"**
 
-3. Then propose **negative cases** — what should the system refuse or reject, and what should happen when it does?
+Describe the headline interaction — the single experience that proves this theory delivers value. Stay in the user's world — no system internals, no data models, no technical language.
 
-Use **diverse, dissimilar inputs** across examples. If every example could be satisfied by hardcoding a single response, the examples aren't doing their job.
+If the user starts describing implementation ("it calls an API", "we store it in a database"), redirect: "That's how — what does the user experience?"
 
-At each stage, present the examples to the user, **STOP and wait for the user's response**. 
-Find out it they think the examples are right, if any values are wrong, if they're missing any cases they've seen go wrong before, and if any example is testing the same thing as another. The user decides what is correct and sufficient — do not answer these questions yourself.:
+### 2b: Supporting Jobs
+
+Ask the user: **"What must the system be able to do to deliver that experience?"**
+
+Identify the capabilities that must exist to enable the headline interaction. Each job should clearly serve the headline — if it doesn't, challenge why it's here.
+
+Resist premature sophistication. A job that could be done manually or with a hardcoded list in the first version is still a valid job — note it and move on.
+
+### 2c: Napkin Sketch
+
+Ask the user: **"How do these jobs fit together? What data does each one need, and who provides it?"**
+
+Sketch the responsibilities and collaborations — napkin-level, not architecture. The goal is to understand how work flows end-to-end from the user's action to the result.
+
+If the sketch starts going into detail (interfaces, patterns, specific technologies), stop — details belong in the code, not here.
 
 ## Phase 3: Synthesise
 
-Produce a **Spec** for this theory as a **task list** — each example is a checkbox so `/tdd` can tick it off as it goes, and GitHub renders the list as a progress bar on the issue.
+Produce a **Spec** for this theory.
 
 Format:
 
 ~~~markdown
-### [Issue Name]
+## [Theory Name]
 
-- [ ] **1. <short name>** — <happy path | boundary | negative>
-  - **Given** <concrete precondition>
-  - **When** <specific action>
-  - **Then** <expected outcome — exact values for deterministic features, contracts/properties for non-deterministic ones>
-- [ ] **2. <short name>** — <type>
-  - **Given** ...
-  - **When** ...
-  - **Then** ...
+### Headline Interaction
+<what the user sees and does>
+
+### Supporting Jobs
+<list of capabilities, each with a one-line description of what it does and why the headline needs it>
+
+### Napkin Sketch
+<responsibilities and collaborations — how jobs relate, what data flows where>
 ~~~
 
 ### Where to write it
@@ -65,24 +70,20 @@ Format:
 **Local mode** — create `./specs/<theory-number>-<slug>.md`. Create the `specs/` directory if needed. Include a header block at the top:
 
 ~~~markdown
-**Status:** 🚧 Spec ready, awaiting /tdd
+**Status:** Spec ready, awaiting /tdd
 **Part of:** <theories reference>
-**Improves:** <what aspect of the current state>
+**Improves:** <what aspect of the current state, referencing baseline metric>
 **Builds on:** <optional>
 **Requires:** <deterministic | LLM: ... | API: ...>
 
 ## Description
 
 <one sentence — what the software can do after this theory>
-
-## Spec
-
-<task list of examples>
 ~~~
 
-**GH mode** — edit the existing stub issue body with `gh issue edit <number> --body-file <tmpfile>`. Update `**Status:**` from `Not started` to `🚧 Spec ready, awaiting /tdd`, then replace the `*Not yet specified...*` placeholder with the task list of examples.
+**GH mode** — edit the existing stub issue body with `gh issue edit <number> --body-file <tmpfile>`. Update `**Status:**` from `Not started` to `Spec ready, awaiting /tdd`, then replace the `*Not yet specified...*` placeholder with the full spec content.
 
-Do not include code, test implementations, architecture, or UI decisions. These examples define what the software does in response to specific situations — nothing more.
+Do not include code, test implementations, or technology choices.
 
 ## Phase 4: Validate
 
@@ -100,11 +101,11 @@ And *Next step*: `Run /tdd on theory <number>`.
 
 ## Loop-back triggers
 
-`/spec` is a middle loop. If writing concrete examples reveals the theory itself is wrong, stop and go back to `/theories`:
+`/spec` is a middle loop. If specifying the theory reveals the theory itself is wrong, stop and go back to `/theories`:
 
 - The theory can't be described as a single thin slice — it's really two theories.
-- Examples reveal a dependency on another theory that isn't sequenced to come first.
 - The theory doesn't clearly improve any aspect of the current state.
-- Every example you can think of would be satisfied by hardcoding a single response — the theory isn't really delivering distinct behaviour.
+- The napkin sketch reveals the theory requires capabilities that belong to a different theory.
+- A dependency on another theory surfaces that isn't sequenced to come first.
 
-Loop-back is expected. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Theories document, then return to `/spec`.
+Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Theories document, then return to `/spec`.

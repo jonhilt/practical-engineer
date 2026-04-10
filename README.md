@@ -10,8 +10,8 @@ Four skills, used in order:
 |---|---|
 | **Goals** | Interview about the problem space, produce a Goals Document |
 | **Theories** | Break the Goals Document into a sequenced set of testable theories |
-| **Spec** | Define one theory's behaviour through concrete Given/When/Then examples |
-| **TDD** | Implement one theory through strict outside-in TDD, one example at a time |
+| **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and napkin sketch |
+| **TDD** | Implement one theory through strict outside-in TDD, deriving tests from the spec brief |
 
 Each skill picks up where the previous one left off. You don't have to use all four — start wherever your project is.
 
@@ -26,11 +26,11 @@ Goals               ← outermost: define the problem
             └─ TDD  ← inner: Red → Green → Inspect → Refactor → Confirm
 ```
 
-**TDD → Spec** — an example is ambiguous, wrong, or a new edge case emerges during implementation.
+**TDD → Spec** — a test can't be written without assumptions the spec doesn't cover, or a job is missing from the spec.
 
 **TDD → Theories** — the theory is too big for one slice, has an unmet dependency, or doesn't improve the current state as expected.
 
-**Spec → Theories** — the theory can't be described as a single thin slice, or its examples reveal a sequencing problem.
+**Spec → Theories** — the theory can't be described as a single thin slice, or the napkin sketch reveals it requires capabilities from a different theory.
 
 **Theories → Goals** — a theory doesn't address the problem statement, or the current state baseline is incomplete.
 
@@ -38,7 +38,7 @@ Loop-backs are expected, not failures. Each pass sharpens the inputs for the nex
 
 ## Persistence
 
-Skills auto-detect whether you have a GitHub repo (`gh repo view`) and default to **GH mode** (issues, labels, task-list checkboxes) or **local mode** (markdown files in the repo). You can override either way.
+Skills auto-detect whether you have a GitHub repo (`gh repo view`) and default to **GH mode** (issues, labels) or **local mode** (markdown files in the repo). You can override either way.
 
 A gitignored `PROGRESS.md` file carries forward context between sessions — current work, parked questions, blockers, and decisions that aren't visible from code or git history.
 

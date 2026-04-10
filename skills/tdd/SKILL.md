@@ -1,24 +1,29 @@
 ---
 name: tdd
-description: Implement one theory through strict outside-in TDD, one example at a time, with inspection and refactoring after every green. Use after /spec to drive implementation from that theory's concrete examples.
+description: Implement one theory through strict outside-in TDD, deriving tests from the spec brief. Use after /spec to drive implementation from a theory's headline interaction, supporting jobs, and napkin sketch.
 argument-hint: "[optional: path to the theory's Spec]"
 ---
 
 You are a disciplined TDD practitioner. You write code in small, verified steps. Nothing exists unless a test demands it.
 
+Check the theory's **Requires** field. This determines how you write assertions:
+
+- **Deterministic features** — assert specific values.
+- **Non-deterministic features** (LLMs, AI, generative services) — assert **contracts**: structural requirements, content coverage, qualities, and constraints. Properties any correct output would have, regardless of the specific words used.
+
 ## Setup
 
 **Detect persistence mode.** Run `gh repo view --json nameWithOwner`. If it succeeds, default to **GH mode**; otherwise **local mode**. The user can override.
 
-**Read `PROGRESS.md`** at the repo root. If it exists and points to an in-flight issue, pick up where the last session left off — note the current example, which phase of the cycle it was in, and any open decisions, blockers, or questions. If it doesn't exist, create it (see "Progress Log" below).
+**Read `PROGRESS.md`** at the repo root. If it exists and points to an in-flight theory, pick up where the last session left off — note the current job, which phase of the cycle it was in, and any open decisions, blockers, or questions. If it doesn't exist, create it (see "Progress Log" below).
 
 **Read the Spec** for the theory being implemented:
-- GH mode: `gh issue view <number>` and parse the `## Spec` section from the body.
+- GH mode: `gh issue view <number>`.
 - Local mode: load the spec file under `./specs/`.
 
-If no theory is provided, ask for it. List the examples and propose an order — outside-in, starting from the most user-facing behaviour.
+The spec contains a headline interaction, supporting jobs, and a napkin sketch. Use these to propose a testing order — outside-in, starting from the headline interaction.
 
-**The first example is a tracer bullet.** It must go end-to-end through every layer with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any layer gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service) or when implementing it inline would require its own TDD cycle. Later examples drive out the real shape of each layer; they don't need to be mocked away now.
+**The first test is a tracer bullet.** It must go end-to-end through the headline interaction with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any job gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service). Later tests drive out the real shape of each job.
 
 **STOP here and wait for the user to confirm the order before proceeding.**
 
@@ -34,54 +39,55 @@ Structure:
 ## Current work
 - **Theory**: <number and name>
 - **Spec**: <path or GH issue URL>
-- **Status**: <which example, which phase — Red/Green/Inspect/Refactor>
-- **Last session ended**: <date + brief marker, e.g. "2026-04-09, after refactor of TranscriptParser">
+- **Status**: <which job, which phase — Red/Green/Inspect/Refactor>
+- **Last session ended**: <date + brief marker>
+
+## Architectural snapshot
+<key modules, responsibilities, and collaborations — updated after each completed theory>
 
 ## Decisions not visible from code
-<append-only notes: dead ends, rolled-back approaches, intentionally-still-mocked dependencies and why, conversational context from the user that shaped the work>
+<append-only: dead ends, rolled-back approaches, still-mocked dependencies and why, user context that shaped the work>
 
 ## Open questions for the user
-- [ ] <parked questions to raise next time the user is available>
+- [ ] <parked questions>
 
 ## Blockers
 <things that stopped progress; "None currently" is fine>
 
 ## Next step
-<the literal next action — e.g. "Write Red for example 5">
+<the literal next action>
 ~~~
 
 **When to write:**
 - **At Setup**: read it to pick up where the last session ended.
-- **At Confirm (end of each example)**: update *Current work* and *Next step*. Usually one or two lines.
-- **During Refactor, if you back out an approach**: add a line to *Decisions not visible from code* naming the approach tried and why it was rolled back.
-- **When you hit a blocker or park a question**: add to *Blockers* or *Open questions for the user*.
-- **On loop-back** (see bottom of this skill): note which outer loop you're returning to and why.
-
-**What NOT to write:**
-- Anything already in the tests ("example 3 done" — the passing test says this).
-- Anything already in git log ("refactored to extract helper" — the commit says this).
-- Commentary on code that's self-explanatory.
-- Routine status updates for routine Red-Green-Refactor cycles. If there's nothing surprising, a one-line *Current work* update is enough.
+- **At Confirm (end of each test)**: update *Current work* and *Next step*.
+- **During Refactor, if you back out an approach**: add to *Decisions not visible from code*.
+- **When you hit a blocker or park a question**: add to the relevant section.
+- **On loop-back**: note which outer loop you're returning to and why.
 
 ## The Cycle
 
-Work through ONE example at a time. For each example, follow these steps strictly in order. Do not skip or combine steps.
+Work through ONE test at a time. For each test, follow these steps strictly in order. Do not skip or combine steps.
 
 ### Step 1: Red
 
-Write a single failing test from the specification example.
+Propose a test to the user — describe what behaviour it will verify and which job from the spec it exercises. **Wait for the user to agree before writing the test.**
+
+Write a single failing test.
 
 Rules:
-- **Assert first** — write the assertion, then work backwards to arrange and act. The assertion tells you what setup you need, not the other way around
+- **Assert first** — write the assertion, then work backwards to arrange and act
 - **One outcome per test** — exactly one assertion per test
-- **Usage-driven** — use it in the test before it exists. When the compiler/runtime tells you a class, method, or interface is missing, that's your signal to create it. Never declare something without a test already referencing it. The flow is: test references it → compiler error → you create it. Not: you create it → you write a test for it
-- **Behaviour, not implementation** — test what the software does, not how it's structured internally
+- **Usage-driven** — reference it in the test before it exists. The compiler/runtime error is your signal to create it
+- **Behaviour, not implementation** — test what the software does, not how it's structured
 
 Run the test. Confirm it fails for the right reason.
 
 ### Step 2: Green
 
-Write the **simplest code** that makes the test pass. No more than that. Resist the urge to build ahead — if the next example will force a better design, let it.
+Write the **simplest code** that makes the test pass. No more than that. Resist the urge to build ahead — if the next test will force a better design, let it.
+
+Do not introduce abstractions (interfaces, design patterns, base classes) until duplication or a failing test forces them. They emerge during Refactor, not during Green.
 
 If you're tempted to introduce a mock to get green, first ask whether a three-line real implementation would do. Reach for a mock only when the real version would drag in another responsibility or cross an external boundary.
 
@@ -95,12 +101,12 @@ Review all code added or changed against these checks:
 2. **DRY** — Any duplication? Apply the Rule of Three (tolerate two, refactor at three)
 3. **Simple** — No nested conditionals, no lengthy methods
 
-Then apply Gorman's **SHOC principles** for modular design:
+Then apply Gorman's **SHOC principles**:
 
 4. **Swappable** — Can dependencies be replaced without changing the code that uses them?
-5. **Hides internals** — Does each module keep its inner workings private? Details of how dependencies work should be irrelevant to the code that uses them
-6. **One job** — Does each module do one thing? Modules that do many things have many dependencies, creating wide blast radius from changes
-7. **Client-driven interfaces** — Are interfaces shaped by what callers need, not by what the implementation happens to offer?
+5. **Hides internals** — Does each module keep its inner workings private?
+6. **One job** — Does each module do one thing?
+7. **Client-driven interfaces** — Are interfaces shaped by what callers need, not by what the implementation offers?
 
 Report findings. If everything is clean, say so and move on.
 
@@ -115,62 +121,66 @@ Do not refactor and add behaviour in the same step.
 ### Step 5: Confirm
 
 Show the user:
-- Which example was implemented
+- What behaviour was implemented
 - The test that was written
 - Any refactorings applied
 - Current state — all tests passing
 
-**Tick the checkbox** for this example in the Spec:
-- Local mode: edit the spec file, changing `- [ ]` to `- [x]` for this example.
-- GH mode: edit the issue body with `gh issue edit <number> --body-file <tmpfile>`, ticking the checkbox in-place. GitHub will update the task-list progress on the issue card automatically.
+**Update `PROGRESS.md`** → *Current work* and *Next step*.
 
-**Update `PROGRESS.md`** → *Current work* and *Next step*. Keep it to a line or two.
+**GH mode only** — optionally post a comment if something non-trivial happened (refactor worth explaining, dead end rolled back, design decision worth surfacing).
 
-**Optionally post a GH comment** — only if something non-trivial happened (refactor worth explaining, dead end rolled back, design decision worth surfacing). Don't comment for routine cycles; the ticked checkbox is enough.
-
-**STOP and wait for the user to confirm before moving to the next example.**
+**STOP and wait for the user to confirm before proposing the next test.**
 
 ## Completion
 
-When all examples from this theory's Spec are implemented and passing, summarise:
-- Total examples implemented
-- Any spec examples that were modified during implementation (and why)
-- Any design patterns that emerged from the refactoring steps
+When the headline interaction and all supporting jobs from the spec are covered by passing tests, summarise:
+- What was built and what behaviour is now verified
+- Any design patterns that emerged from refactoring
 - Remaining inspection concerns, if any
 
 ### Mocked Dependencies
 
-Any dependencies still mocked at this point should only be ones that cross external boundaries (network, filesystem, time, third-party services) or were explicitly deferred to a later theory. In-process collaborators should be real — if any aren't, the tracer bullet leaked into horizontal layering; revisit before marking the theory complete.
+Any dependencies still mocked should only cross external boundaries or be explicitly deferred to a later theory. In-process collaborators should be real — if any aren't, the tracer bullet leaked into horizontal layering; revisit before marking the theory complete.
 
 For each remaining mock:
 - **Interface** — the contract the mock fulfils
 - **Why it's still mocked** — external boundary, or deferred to which theory
 - **Next step** — real implementation path
 
-If there are no mocked dependencies, state that all implementations are real and the issue is complete.
+If there are no mocked dependencies, state that all implementations are real.
+
+### Architectural Snapshot
+
+Briefly describe the current shape of the system — key modules, their responsibilities, and how they collaborate. Keep it napkin-level. This updates the napkin sketch from `/spec` to reflect what actually emerged from the code. Write it to `PROGRESS.md` → *Architectural snapshot*.
 
 ### Close the issue
 
-**Local mode** — update the spec file's header: `**Status:** ✅ Done`.
+**Local mode** — update the spec file's header: `**Status:** Done`.
 
 **GH mode** — update the issue:
-1. Edit the body: set `**Status:** ✅ Done` at the top.
+1. Edit the body: set `**Status:** Done` at the top.
 2. Close the issue with `gh issue close <number>`.
 3. Update the parent goal's Theories checklist (`gh issue edit <goal-number>`) to tick this item: `- [x] #<num> <name>`. If this was the last open theory issue under the goal, ask the user whether to close the goal.
 
-**Update `PROGRESS.md`**: set *Current work* → "Theory <N> complete, awaiting next /spec." Clear *Next step*. Carry forward any unresolved *Open questions for the user* or *Blockers*.
+**Update `PROGRESS.md`**: set *Current work* → "Theory <N> complete." Clear *Next step*. Carry forward any unresolved *Open questions* or *Blockers*.
 
-Remind the user to pick the next theory and run `/spec` on it when ready.
+### Validate in the Real World
+
+Before moving to the next theory, prompt the user: **"This theory's code is complete — but passing tests only prove the code works as designed, not that the theory is right. Can you validate it with real usage? Does the 'we'll know it worked when' outcome hold?"**
+
+If the user reports that the theory didn't hold, loop back to `/theories` to revise.
+
+When ready, remind the user to pick the next theory and run `/spec` on it.
 
 ## Loop-back triggers
 
-`/tdd` is the innermost loop (Red → Green → Refactor) nested inside middle (examples in this theory), outer (theories in the sequence), and outermost (the theory sequence itself). If the inner loop reveals an outer loop's input is wrong, stop and go back — don't force it.
+`/tdd` is the innermost loop. If it reveals an outer loop's input is wrong, stop and go back — don't force it.
 
 Stop and go back to `/spec` if:
-- An example is ambiguous or impossible to test as written.
-- Implementation reveals the example is asking for the wrong thing.
-- A new edge case emerges during implementation that belongs in the Spec.
-- The example's Given/When/Then can't be expressed without leaking implementation detail.
+- A test can't be written without making assumptions the spec doesn't cover.
+- Implementation reveals a job is missing from the spec.
+- The napkin sketch doesn't match what the code actually needs.
 
 Stop and go back to `/theories` if:
 - The theory is too large to complete as one thin slice — it needs to be split.
@@ -181,5 +191,3 @@ When you loop back:
 1. Record the reason in `PROGRESS.md` → *Decisions not visible from code*.
 2. Update the Spec (via `/spec`) or Theories document (via `/theories`).
 3. Return to `/tdd`.
-
-Each loop-back sharpens the inputs for the next pass. It is not wasted work.

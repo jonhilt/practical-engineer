@@ -24,7 +24,7 @@ Ask the user: **"Looking at the current state, what do you think would move the 
 Draw theories out one at a time. For each one the user proposes, help them structure it:
 
 - **We believe** — one sentence describing what the software could do (not how)
-- **Will improve** — what aspect of the current state this addresses
+- **Will improve** — reference the specific baseline metric from the Goals Document (e.g. "reduce manual onboarding steps from 14 to 3"). If the Goals Document flagged no measurable baseline, describe the observable change that would count as improvement
 - **We'll know it worked when** — a concrete, observable outcome that would confirm the theory (this is where success criteria live — per theory, not per goal)
 
 If the user gets stuck, prompt with open questions ("What do users struggle with most right now?", "If you could only change one thing, what would it be?") — but don't answer for them.
@@ -76,7 +76,7 @@ A sequenced list. For each theory:
 
 - **Number and name** (e.g. "1. Generate blog draft from transcript")
 - **We believe** — what the software can do after this is built (one sentence)
-- **Will improve** — what aspect of the current state this addresses
+- **Will improve** — reference the specific baseline metric from the Goals Document (e.g. "reduce manual onboarding steps from 14 to 3"). If the Goals Document flagged no measurable baseline, describe the observable change that would count as improvement
 - **We'll know it worked when** — observable outcome
 - **Validation approach** — cheapest way to test (build, mockup, manual, conversation)
 - **Builds on** — which previous theories must be validated first (if any)
@@ -103,10 +103,7 @@ Show how the current state improves at each point in the sequence, so progress t
    ## Current State
    <from the Goals Document — the baseline we're measuring against>
 
-   ## Constraints
-   <from the Goals Document>
-
-   ## Out of Scope
+   ## Root Causes
    <from the Goals Document>
 
    ## Theories
@@ -126,7 +123,7 @@ Show how the current state improves at each point in the sequence, so progress t
 
    ## Spec
 
-   *Not yet specified. Run /spec to define concrete examples before implementation.*
+   *Not yet specified. Run /spec to produce the brief before implementation.*
    ~~~
 
 4. **Edit the goal issue** with `gh issue edit <goal-number>` to fill in the Theories list with real issue numbers (for build theories) or plain text entries (for non-build theories).
@@ -145,6 +142,9 @@ Present the Theories document and ask for sign-off.
 ## Current work
 - **Theories**: <path to theories.md or goal issue URL>
 - **Status**: Theories defined, awaiting first Spec.
+
+## Architectural snapshot
+<updated after each completed theory>
 
 ## Decisions not visible from code
 - (none yet)
@@ -170,4 +170,4 @@ Remind the user that the next step is to pick the first theory and run `/spec` o
 - A constraint was assumed but never stated in the Goals Document.
 - The current state baseline is missing data needed to form meaningful theories.
 
-Loop-back is expected, not a failure — each pass sharpens the inputs for the next. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Goals Document, then re-run `/theories`.
+Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Goals Document, then re-run `/theories`.
