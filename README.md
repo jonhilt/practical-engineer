@@ -47,7 +47,7 @@ A gitignored `PROGRESS.md` file carries forward context between sessions — cur
 ### Via [skills.sh](https://skills.sh)
 
 ```sh
-npx skills add jonhilton/practical-engineer
+npx skills add jonhilt/practical-engineer
 ```
 
 ### Manual
