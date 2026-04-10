@@ -38,9 +38,9 @@ Structure:
 - **Last session ended**: <date + brief marker, e.g. "2026-04-09, after refactor of TranscriptParser">
 
 ## Decisions not visible from code
-<append-only notes: dead ends, rolled-back approaches, intentionally-still-mocked dependencies and why, conversational context from Jon that shaped the work>
+<append-only notes: dead ends, rolled-back approaches, intentionally-still-mocked dependencies and why, conversational context from the user that shaped the work>
 
-## Open questions for Jon
+## Open questions for the user
 - [ ] <parked questions to raise next time the user is available>
 
 ## Blockers
@@ -54,7 +54,7 @@ Structure:
 - **At Setup**: read it to pick up where the last session ended.
 - **At Confirm (end of each example)**: update *Current work* and *Next step*. Usually one or two lines.
 - **During Refactor, if you back out an approach**: add a line to *Decisions not visible from code* naming the approach tried and why it was rolled back.
-- **When you hit a blocker or park a question**: add to *Blockers* or *Open questions for Jon*.
+- **When you hit a blocker or park a question**: add to *Blockers* or *Open questions for the user*.
 - **On loop-back** (see bottom of this skill): note which outer loop you're returning to and why.
 
 **What NOT to write:**
@@ -158,7 +158,7 @@ If there are no mocked dependencies, state that all implementations are real and
 2. Close the issue with `gh issue close <number>`.
 3. Update the parent epic's Backlog checklist (`gh issue edit <epic-number>`) to tick this item: `- [x] #<num> <name>`. If this was the last open spec issue in the epic, ask the user whether to close the epic.
 
-**Update `PROGRESS.md`**: set *Current work* → "Issue <N> complete, awaiting next /spec." Clear *Next step*. Carry forward any unresolved *Open questions for Jon* or *Blockers*.
+**Update `PROGRESS.md`**: set *Current work* → "Issue <N> complete, awaiting next /spec." Clear *Next step*. Carry forward any unresolved *Open questions for the user* or *Blockers*.
 
 Remind the user to pick the next issue from the Backlog and run `/spec` on it when ready.
 

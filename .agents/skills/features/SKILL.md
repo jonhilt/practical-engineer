@@ -28,7 +28,7 @@ If a feature can't be traced to a success criterion, don't include it.
 
 This phase is a conversation, not a presentation. Present ONE feature at a time, ask the questions below, then **STOP and wait for the user's response** before moving to the next feature. The user decides what is essential — do not answer the questions yourself.
 
-For each feature, ask:
+For each feature, establish:
 
 - Is this essential to meeting the goal, or nice-to-have?
 - What's the simplest version of this that would still count?
@@ -143,7 +143,7 @@ Present the Backlog and ask for sign-off.
 ## Decisions not visible from code
 - (none yet)
 
-## Open questions for Jon
+## Open questions for the user
 - (none)
 
 ## Blockers
