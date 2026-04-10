@@ -1,6 +1,6 @@
 ---
 name: theories
-description: Turn a Goals Document into a sequenced set of theories — each one a hypothesis about what might solve the problem, with a clear way to test it. Use after /goals to decide what to build and why.
+description: Turn a Goals Document into a set of theories — each one a hypothesis about what might solve the problem, with a clear way to test it. Use after /goals to decide what to build and why.
 argument-hint: "[optional: path to Goals Document]"
 
 ---
@@ -26,6 +26,7 @@ Draw theories out one at a time. For each one the user proposes, help them struc
 - **We believe** — one sentence describing what the software could do (not how)
 - **Will improve** — reference the specific baseline metric from the Goals Document (e.g. "reduce manual onboarding steps from 14 to 3"). If the Goals Document flagged no measurable baseline, describe the observable change that would count as improvement
 - **We'll know it worked when** — a concrete, observable outcome that would confirm the theory (this is where success criteria live — per theory, not per goal)
+- **Validation approach** — what's the cheapest way to test this? Does it need to be built, or could a manual process, mockup, or conversation validate it without code?
 
 If the user gets stuck, prompt with open questions ("What do users struggle with most right now?", "If you could only change one thing, what would it be?") — but don't answer for them.
 
@@ -35,44 +36,13 @@ If an observable outcome can't be stated, the theory isn't clear enough yet — 
 
 When the user runs dry, read the theories back and ask: "Is that the set, or is there anything else nagging at you?"
 
-## Phase 3: Challenge
-
-This phase is a conversation, not a presentation. Present ONE theory at a time, ask the questions below, then **STOP and wait for the user's response** before moving to the next. The user decides what's essential — do not answer the questions yourself.
-
-For each theory, establish:
-
-- Is this essential to meeting the goal, or nice-to-have?
-- What's the simplest version of this that would still test the theory?
-- What's the **cheapest way to validate this** before building it? Could a manual process, a mockup, or a conversation with a user test it without code?
-- If we do need to build it, does it depend on another theory being validated first?
-- Does it require deterministic logic, or an external capability (e.g. LLM, third-party API)?
-
-Cut anything the user says isn't essential. Simplify anything that's over-specified. If the user proposes adding theories, ask how it addresses the problem or improves the current state.
-
-## Phase 4: Sequence
-
-Once the theories are agreed, propose a **validation order**. The first should be the one that:
-
-- Tests the riskiest assumption
-- OR delivers the thinnest end-to-end slice that proves the concept
-
-Subsequent theories build on validated ones, each independently testable.
-
-For each theory in the sequence, explain:
-
-- What we learn if it's validated
-- What we'd do differently if it's invalidated
-- Why it comes in this position (not earlier, not later)
-
-**STOP and wait for the user to confirm or reorder before proceeding to Phase 5.**
-
-## Phase 5: Synthesise
+## Phase 3: Synthesise
 
 Produce a **Theories** document. Same content in both modes, different destination.
 
 ### Theories
 
-A sequenced list. For each theory:
+A list. For each theory:
 
 - **Number and name** (e.g. "1. Generate blog draft from transcript")
 - **We believe** — what the software can do after this is built (one sentence)
@@ -80,11 +50,6 @@ A sequenced list. For each theory:
 - **We'll know it worked when** — observable outcome
 - **Validation approach** — cheapest way to test (build, mockup, manual, conversation)
 - **Builds on** — which previous theories must be validated first (if any)
-- **Requires** — deterministic logic, or name the external capability needed
-
-### Progress Map
-
-Show how the current state improves at each point in the sequence, so progress toward the goal is visible. If any aspect of the problem statement isn't addressed by any theory, call it out.
 
 ### Where to write it
 
@@ -119,7 +84,6 @@ Show how the current state improves at each point in the sequence, so progress t
    **Will improve:** <what aspect of the current state>
    **We'll know it worked when:** <observable outcome>
    **Builds on:** <optional — only if this depends on a validated theory>
-   **Requires:** <deterministic | LLM: ... | API: ...>
 
    ## Spec
 
@@ -128,9 +92,9 @@ Show how the current state improves at each point in the sequence, so progress t
 
 4. **Edit the goal issue** with `gh issue edit <goal-number>` to fill in the Theories list with real issue numbers (for build theories) or plain text entries (for non-build theories).
 
-Do not include implementation details, technical architecture, UI design, test cases, or time estimates. This document defines what we're testing and in what order, not how it's built.
+Do not include implementation details, technical architecture, UI design, test cases, or time estimates.
 
-## Phase 6: Validate
+## Phase 4: Validate
 
 Present the Theories document and ask for sign-off.
 

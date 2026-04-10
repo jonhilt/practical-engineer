@@ -9,7 +9,7 @@ Four skills, used in order:
 | Skill | Purpose |
 |---|---|
 | **Goals** | Interview about the problem space, produce a Goals Document |
-| **Theories** | Break the Goals Document into a sequenced set of testable theories |
+| **Theories** | Turn the Goals Document into testable theories — hypotheses about what might solve the problem |
 | **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and napkin sketch |
 | **TDD** | Implement one theory through strict outside-in TDD, deriving tests from the spec brief |
 
