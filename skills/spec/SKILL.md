@@ -38,11 +38,8 @@ Propose examples for this issue:
 
 Use **diverse, dissimilar inputs** across examples. If every example could be satisfied by hardcoding a single response, the examples aren't doing their job.
 
-After presenting examples, **STOP and wait for the user's response**. Ask:
-
-- Are these examples right? Any values wrong?
-- What am I missing — any cases you've seen go wrong before?
-- Is any example testing the same thing as another?
+At each stage, present the examples to the user, **STOP and wait for the user's response**. 
+Find out it they think the examples are right, if any values are wrong, if they're missing any cases they've seen go wrong before, and if any example is testing the same thing as another. The user decides what is correct and sufficient — do not answer these questions yourself.:
 
 ## Phase 3: Synthesise
 

@@ -42,12 +42,20 @@ Skills auto-detect whether you have a GitHub repo (`gh repo view`) and default t
 
 A gitignored `PROGRESS.md` file carries forward context between sessions — current work, parked questions, blockers, and decisions that aren't visible from code or git history.
 
-## Setup
+## Install
 
-Each skill is a standalone markdown file under `.agents/skills/`. Copy them into your project or point your agent tooling at them — they have no dependencies beyond a `gh` CLI for GitHub mode.
+### Via [skills.sh](https://skills.sh)
 
 ```sh
-cp -r practical-engineer/.agents /path/to/your/project/
+npx skills add jonhilton/practical-engineer
+```
+
+### Manual
+
+Each skill is a standalone markdown file under `skills/`. Copy them into your project or point your agent tooling at them — they have no dependencies beyond a `gh` CLI for GitHub mode.
+
+```sh
+cp -r practical-engineer/skills /path/to/your/project/.agents/
 ```
 
 ## License
