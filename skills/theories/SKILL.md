@@ -68,7 +68,7 @@ For each theory in the sequence, explain:
 
 ## Phase 5: Synthesise
 
-Produce a **Backlog**. Same content in both modes, different destination.
+Produce a **Theories** document. Same content in both modes, different destination.
 
 ### Theories
 
@@ -88,13 +88,13 @@ Show which success criteria are addressed at each point in the sequence, so prog
 
 ### Where to write it
 
-**Local mode** — write to `./backlog.md` at the repo root.
+**Local mode** — write to `./theories.md` at the repo root.
 
-**GH mode** — create one epic tracking issue plus one stub spec issue per theory:
+**GH mode** — create one goal tracking issue, plus one child issue per build theory:
 
-1. **Ensure labels exist.** Check for `epic` and `spec` labels with `gh label list`. Create any that are missing: `gh label create epic --description "Tracking issue for a larger initiative" --color 5319e7` and `gh label create spec --description "Concrete spec with examples" --color 0e8a16`.
+1. **Ensure labels exist.** Check for `goal` and `theory` labels with `gh label list`. Create any that are missing: `gh label create goal --description "Tracking issue for a goal" --color 5319e7` and `gh label create theory --description "Testable hypothesis derived from a goal" --color 0e8a16`.
 
-2. **Create the epic issue** with `gh issue create --label epic --title "Epic: <Goals title>"`. Body structure:
+2. **Create the goal issue** with `gh issue create --label goal --title "<Goals title>"`. Body structure:
 
    ~~~markdown
    ## Problem Statement
@@ -120,15 +120,14 @@ Show which success criteria are addressed at each point in the sequence, so prog
    | SC1: ... | #<TBD> |
    ~~~
 
-3. **Create each child spec issue** with `gh issue create --label spec --title "<theory name>"`. Body:
+3. **Create a child issue for each `build` theory only.** Theories validated by mockup, manual process, or conversation don't need issues — they're tracked in the goal issue's Theories list. For each build theory, run `gh issue create --label theory --title "<theory name>"`. Body:
 
    ~~~markdown
    **Status:** Not started
-   **Part of:** #<epic-number>
+   **Part of:** #<goal-number>
    **We believe:** <one sentence>
    **Will achieve:** <SC refs, e.g. "SC1, SC4">
    **We'll know it worked when:** <observable outcome>
-   **Validation approach:** <build | mockup | manual | conversation>
    **Builds on:** <optional — only if this depends on a validated theory>
    **Requires:** <deterministic | LLM: ... | API: ...>
    
@@ -137,13 +136,13 @@ Show which success criteria are addressed at each point in the sequence, so prog
    *Not yet specified. Run /spec to define concrete examples before implementation.*
    ~~~
 
-4. **Edit the epic** with `gh issue edit <epic-number>` to fill in the Theories list with real issue numbers and complete the Validation Map.
+4. **Edit the goal issue** with `gh issue edit <goal-number>` to fill in the Theories list with real issue numbers (for build theories) or plain text entries (for non-build theories), and complete the Validation Map.
 
 Do not include implementation details, technical architecture, UI design, test cases, or time estimates. This document defines what we're testing and in what order, not how it's built.
 
 ## Phase 6: Validate
 
-Present the Backlog and ask for sign-off.
+Present the Theories document and ask for sign-off.
 
 **Initialise `PROGRESS.md`** at the repo root if it doesn't exist. Ensure it's in `.gitignore` (add if missing). Seed it with:
 
@@ -151,7 +150,7 @@ Present the Backlog and ask for sign-off.
 # Progress Log
 
 ## Current work
-- **Backlog**: <path to backlog.md or epic issue URL>
+- **Theories**: <path to theories.md or goal issue URL>
 - **Status**: Theories defined, awaiting first Spec.
 
 ## Decisions not visible from code
@@ -164,7 +163,7 @@ Present the Backlog and ask for sign-off.
 - (none)
 
 ## Next step
-- Pick theory 1 from the backlog and run `/spec` on it.
+- Pick theory 1 and run `/spec` on it.
 ~~~
 
 Remind the user that the next step is to pick the first theory and run `/spec` on it.
@@ -178,4 +177,4 @@ Remind the user that the next step is to pick the first theory and run `/spec` o
 - A constraint was assumed but never stated in the Goals Document.
 - A success criterion is unreachable without capabilities that weren't acknowledged.
 
-Loop-back is expected, not a failure — each pass sharpens the inputs for the next. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Goals Document, then return to `/theories`.
+Loop-back is expected, not a failure — each pass sharpens the inputs for the next. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Goals Document, then re-run `/theories`.

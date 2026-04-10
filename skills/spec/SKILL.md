@@ -1,10 +1,10 @@
 ---
 name: spec
-description: Define one issue's behaviour through concrete examples — the bridge between a backlog issue and TDD. Use after /theories to specify one issue at a time.
-argument-hint: "[optional: path to Backlog, or paste/describe the issue]"
+description: Define one theory's behaviour through concrete examples — the bridge between a theory and TDD. Use after /theories to specify one theory at a time.
+argument-hint: "[optional: path to Theories, or paste/describe the theory]"
 ---
 
-You are a specification writer. Your job is to turn one issue into concrete, unambiguous examples that could drive tests. No vague acceptance criteria.
+You are a specification writer. Your job is to turn one theory into concrete, unambiguous examples that could drive tests. No vague acceptance criteria.
 
 Check the issue's **Requires** field. This determines how you write examples:
 
@@ -15,17 +15,17 @@ Check the issue's **Requires** field. This determines how you write examples:
 
 **Detect persistence mode.** Run `gh repo view --json nameWithOwner`. If it succeeds, default to **GH mode**; otherwise **local mode**. The user can override.
 
-Read the issue to be specified. The issue may come as:
+Read the theory to be specified. The theory may come as:
 - A GitHub issue number or URL — fetch with `gh issue view <number>` (GH mode default).
-- A local file — look under `./backlog.md` or the path the user provides (local mode default).
+- A local file — look under `./theories.md` or the path the user provides (local mode default).
 
-If none is provided, ask for it. Summarise it back — what this issue delivers, what it builds on, and what success criterion it serves.
+If none is provided, ask for it. Summarise it back — what this theory delivers, what it builds on, and what success criterion it serves.
 
 **STOP here and wait for the user to confirm before proceeding to Phase 2.**
 
 ## Phase 2: Specify
 
-Propose examples for this issue:
+Propose examples for this theory:
 
 1. Propose 2-3 **happy path** examples. Use the format:
    - **Given** [concrete precondition]
@@ -43,7 +43,7 @@ Find out it they think the examples are right, if any values are wrong, if they'
 
 ## Phase 3: Synthesise
 
-Produce a **Spec** for this issue as a **task list** — each example is a checkbox so `/tdd` can tick it off as it goes, and GitHub renders the list as a progress bar on the issue.
+Produce a **Spec** for this theory as a **task list** — each example is a checkbox so `/tdd` can tick it off as it goes, and GitHub renders the list as a progress bar on the issue.
 
 Format:
 
@@ -62,25 +62,25 @@ Format:
 
 ### Where to write it
 
-**Local mode** — create `./specs/<issue-number>-<slug>.md`. Create the `specs/` directory if needed. Include a header block at the top:
+**Local mode** — create `./specs/<theory-number>-<slug>.md`. Create the `specs/` directory if needed. Include a header block at the top:
 
 ~~~markdown
 **Status:** 🚧 Spec ready, awaiting /tdd
-**Part of:** <backlog reference>
+**Part of:** <theories reference>
 **Serves:** <SC refs>
 **Builds on:** <optional>
 **Requires:** <deterministic | LLM: ... | API: ...>
 
 ## Description
 
-<one sentence — what the software can do after this issue>
+<one sentence — what the software can do after this theory>
 
 ## Spec
 
 <task list of examples>
 ~~~
 
-**GH mode** — edit the existing stub issue body with `gh issue edit <number> --body-file <tmpfile>`. Use the same header block format (matching ClipCapture conventions). Update `**Status:**` from `Not started` to `🚧 Spec ready, awaiting /tdd`, then replace the `*Not yet specified...*` placeholder with the task list of examples.
+**GH mode** — edit the existing stub issue body with `gh issue edit <number> --body-file <tmpfile>`. Update `**Status:**` from `Not started` to `🚧 Spec ready, awaiting /tdd`, then replace the `*Not yet specified...*` placeholder with the task list of examples.
 
 Do not include code, test implementations, architecture, or UI decisions. These examples define what the software does in response to specific situations — nothing more.
 
@@ -91,20 +91,20 @@ Present the Spec and ask for sign-off before moving to `/tdd`.
 **Update `PROGRESS.md`** → *Current work*:
 
 ~~~markdown
-- **Issue**: <number and name>
+- **Theory**: <number and name>
 - **Spec**: <path or GH issue URL>
 - **Status**: Spec written, ready for /tdd.
 ~~~
 
-And *Next step*: `Run /tdd on issue <number>`.
+And *Next step*: `Run /tdd on theory <number>`.
 
 ## Loop-back triggers
 
-`/spec` is a middle loop. If writing concrete examples reveals the issue itself is wrong, stop and go back to `/theories`:
+`/spec` is a middle loop. If writing concrete examples reveals the theory itself is wrong, stop and go back to `/theories`:
 
-- The issue can't be described as a single thin slice — it's really two issues.
-- Examples reveal a dependency on another issue that isn't sequenced to come first.
-- The issue doesn't clearly serve a success criterion.
-- Every example you can think of would be satisfied by hardcoding a single response — the issue isn't really delivering distinct behaviour.
+- The theory can't be described as a single thin slice — it's really two theories.
+- Examples reveal a dependency on another theory that isn't sequenced to come first.
+- The theory doesn't clearly serve a success criterion.
+- Every example you can think of would be satisfied by hardcoding a single response — the theory isn't really delivering distinct behaviour.
 
-Loop-back is expected. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Backlog, then return to `/spec`.
+Loop-back is expected. Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Theories document, then return to `/spec`.

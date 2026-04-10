@@ -1,7 +1,7 @@
 ---
 name: tdd
-description: Implement one issue through strict outside-in TDD, one example at a time, with inspection and refactoring after every green. Use after /spec to drive implementation from that issue's concrete examples.
-argument-hint: "[optional: path to the issue's Spec]"
+description: Implement one theory through strict outside-in TDD, one example at a time, with inspection and refactoring after every green. Use after /spec to drive implementation from that theory's concrete examples.
+argument-hint: "[optional: path to the theory's Spec]"
 ---
 
 You are a disciplined TDD practitioner. You write code in small, verified steps. Nothing exists unless a test demands it.
@@ -12,11 +12,11 @@ You are a disciplined TDD practitioner. You write code in small, verified steps.
 
 **Read `PROGRESS.md`** at the repo root. If it exists and points to an in-flight issue, pick up where the last session left off — note the current example, which phase of the cycle it was in, and any open decisions, blockers, or questions. If it doesn't exist, create it (see "Progress Log" below).
 
-**Read the Spec** for the issue being implemented:
+**Read the Spec** for the theory being implemented:
 - GH mode: `gh issue view <number>` and parse the `## Spec` section from the body.
 - Local mode: load the spec file under `./specs/`.
 
-If no issue is provided, ask for it. List the examples and propose an order — outside-in, starting from the most user-facing behaviour.
+If no theory is provided, ask for it. List the examples and propose an order — outside-in, starting from the most user-facing behaviour.
 
 **The first example is a tracer bullet.** It must go end-to-end through every layer with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any layer gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service) or when implementing it inline would require its own TDD cycle. Later examples drive out the real shape of each layer; they don't need to be mocked away now.
 
@@ -32,7 +32,7 @@ Structure:
 # Progress Log
 
 ## Current work
-- **Issue**: <number and name>
+- **Theory**: <number and name>
 - **Spec**: <path or GH issue URL>
 - **Status**: <which example, which phase — Red/Green/Inspect/Refactor>
 - **Last session ended**: <date + brief marker, e.g. "2026-04-09, after refactor of TranscriptParser">
@@ -132,7 +132,7 @@ Show the user:
 
 ## Completion
 
-When all examples from this issue's Spec are implemented and passing, summarise:
+When all examples from this theory's Spec are implemented and passing, summarise:
 - Total examples implemented
 - Any spec examples that were modified during implementation (and why)
 - Any design patterns that emerged from the refactoring steps
@@ -140,11 +140,11 @@ When all examples from this issue's Spec are implemented and passing, summarise:
 
 ### Mocked Dependencies
 
-Any dependencies still mocked at this point should only be ones that cross external boundaries (network, filesystem, time, third-party services) or were explicitly deferred to a later issue. In-process collaborators should be real — if any aren't, the tracer bullet leaked into horizontal layering; revisit before marking the issue complete.
+Any dependencies still mocked at this point should only be ones that cross external boundaries (network, filesystem, time, third-party services) or were explicitly deferred to a later theory. In-process collaborators should be real — if any aren't, the tracer bullet leaked into horizontal layering; revisit before marking the theory complete.
 
 For each remaining mock:
 - **Interface** — the contract the mock fulfils
-- **Why it's still mocked** — external boundary, or deferred to which issue
+- **Why it's still mocked** — external boundary, or deferred to which theory
 - **Next step** — real implementation path
 
 If there are no mocked dependencies, state that all implementations are real and the issue is complete.
@@ -156,15 +156,15 @@ If there are no mocked dependencies, state that all implementations are real and
 **GH mode** — update the issue:
 1. Edit the body: set `**Status:** ✅ Done` at the top.
 2. Close the issue with `gh issue close <number>`.
-3. Update the parent epic's Backlog checklist (`gh issue edit <epic-number>`) to tick this item: `- [x] #<num> <name>`. If this was the last open spec issue in the epic, ask the user whether to close the epic.
+3. Update the parent goal's Theories checklist (`gh issue edit <goal-number>`) to tick this item: `- [x] #<num> <name>`. If this was the last open theory issue under the goal, ask the user whether to close the goal.
 
-**Update `PROGRESS.md`**: set *Current work* → "Issue <N> complete, awaiting next /spec." Clear *Next step*. Carry forward any unresolved *Open questions for the user* or *Blockers*.
+**Update `PROGRESS.md`**: set *Current work* → "Theory <N> complete, awaiting next /spec." Clear *Next step*. Carry forward any unresolved *Open questions for the user* or *Blockers*.
 
-Remind the user to pick the next issue from the Backlog and run `/spec` on it when ready.
+Remind the user to pick the next theory and run `/spec` on it when ready.
 
 ## Loop-back triggers
 
-`/tdd` is the innermost loop (Red → Green → Refactor) nested inside middle (examples in this issue), outer (issues in the backlog), and outermost (the backlog itself). If the inner loop reveals an outer loop's input is wrong, stop and go back — don't force it.
+`/tdd` is the innermost loop (Red → Green → Refactor) nested inside middle (examples in this theory), outer (theories in the sequence), and outermost (the theory sequence itself). If the inner loop reveals an outer loop's input is wrong, stop and go back — don't force it.
 
 Stop and go back to `/spec` if:
 - An example is ambiguous or impossible to test as written.
@@ -173,13 +173,13 @@ Stop and go back to `/spec` if:
 - The example's Given/When/Then can't be expressed without leaking implementation detail.
 
 Stop and go back to `/theories` if:
-- The issue is too large to complete as one thin slice — it needs to be split.
-- A dependency on another issue is revealed mid-implementation and blocks progress.
-- The issue, once built, clearly doesn't satisfy the success criterion it was meant to serve.
+- The theory is too large to complete as one thin slice — it needs to be split.
+- A dependency on another theory is revealed mid-implementation and blocks progress.
+- The theory, once built, clearly doesn't satisfy the success criterion it was meant to serve.
 
 When you loop back:
 1. Record the reason in `PROGRESS.md` → *Decisions not visible from code*.
-2. Update the Spec (via `/spec`) or Backlog (via `/theories`).
+2. Update the Spec (via `/spec`) or Theories document (via `/theories`).
 3. Return to `/tdd`.
 
 Each loop-back sharpens the inputs for the next pass. It is not wasted work.
