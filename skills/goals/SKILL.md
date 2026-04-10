@@ -1,6 +1,6 @@
 ---
-name: write-prd
-description: Grill the user about a problem space until the business goal is crystal clear, then produce a structured Goals document. Use when the user wants to define what they're building and why, kick off a new project, or write a PRD.
+name: goals
+description: Grill the user about a problem space until the business goal is crystal clear, then produce a structured Goals document. Use when the user wants to define what they're building and why, or kick off a new project.
 argument-hint: "[optional: brief description of the idea or problem]"
 ---
 

@@ -172,14 +172,14 @@ Stop and go back to `/spec` if:
 - A new edge case emerges during implementation that belongs in the Spec.
 - The example's Given/When/Then can't be expressed without leaking implementation detail.
 
-Stop and go back to `/features` if:
+Stop and go back to `/theories` if:
 - The issue is too large to complete as one thin slice — it needs to be split.
 - A dependency on another issue is revealed mid-implementation and blocks progress.
 - The issue, once built, clearly doesn't satisfy the success criterion it was meant to serve.
 
 When you loop back:
 1. Record the reason in `PROGRESS.md` → *Decisions not visible from code*.
-2. Update the Spec (via `/spec`) or Backlog (via `/features`).
+2. Update the Spec (via `/spec`) or Backlog (via `/theories`).
 3. Return to `/tdd`.
 
 Each loop-back sharpens the inputs for the next pass. It is not wasted work.

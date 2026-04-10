@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Define one issue's behaviour through concrete examples — the bridge between a backlog issue and TDD. Use after /features to specify one issue at a time.
+description: Define one issue's behaviour through concrete examples — the bridge between a backlog issue and TDD. Use after /theories to specify one issue at a time.
 argument-hint: "[optional: path to Backlog, or paste/describe the issue]"
 ---
 
@@ -100,7 +100,7 @@ And *Next step*: `Run /tdd on issue <number>`.
 
 ## Loop-back triggers
 
-`/spec` is a middle loop. If writing concrete examples reveals the issue itself is wrong, stop and go back to `/features`:
+`/spec` is a middle loop. If writing concrete examples reveals the issue itself is wrong, stop and go back to `/theories`:
 
 - The issue can't be described as a single thin slice — it's really two issues.
 - Examples reveal a dependency on another issue that isn't sequenced to come first.
