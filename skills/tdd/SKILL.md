@@ -21,7 +21,9 @@ Check the theory's **Requires** field. This determines how you write assertions:
 - GH mode: `gh issue view <number>`.
 - Local mode: load the spec file under `./specs/`.
 
-The spec contains a headline interaction, supporting jobs, and a napkin sketch. Use these to propose a testing order — outside-in, starting from the headline interaction.
+The spec contains a headline interaction, supporting jobs, and a napkin sketch. If a `/spike` was run, it also contains a **Technology Decisions** section with concrete choices, proved constraints, and key integration details — use these when writing tests and production code. If the spec has unresolved `LLM:` or `API:` dependencies in the Requires field and no Technology Decisions section, stop and run `/spike` first.
+
+Use the spec to propose a testing order — outside-in, starting from the headline interaction.
 
 **The first test is a tracer bullet.** It must go end-to-end through the headline interaction with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any job gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service). Later tests drive out the real shape of each job.
 
