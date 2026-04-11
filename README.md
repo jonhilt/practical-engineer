@@ -4,31 +4,39 @@ Agent skills for building software through disciplined discovery, specification,
 
 ## The Skills
 
-Four skills, used in order:
+Five skills, used in order:
 
 | Skill | Purpose |
 |---|---|
 | **Goals** | Interview about the problem space, produce a Goals Document |
 | **Theories** | Turn the Goals Document into testable theories — hypotheses about what might solve the problem |
 | **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and napkin sketch |
+| **Spike** | Resolve technology unknowns from the spec — research options, build throwaway proofs, record decisions |
 | **TDD** | Implement one theory through strict outside-in TDD, deriving tests from the spec brief |
 
-Each skill picks up where the previous one left off. You don't have to use all four — start wherever your project is.
+Each skill picks up where the previous one left off. Spike is skipped when all dependencies are deterministic and the team already knows the technology. You don't have to use all five — start wherever your project is.
 
 ## How the Loops Work
 
 The skills form nested loops. When an inner loop discovers its inputs are wrong, it stops and kicks back to the appropriate outer loop:
 
 ```
-Goals               ← outermost: define the problem
-  └─ Theories       ← outer: sequence the theories
-       └─ Spec      ← middle: specify one theory
-            └─ TDD  ← inner: Red → Green → Inspect → Refactor → Confirm
+Goals                    ← outermost: define the problem
+  └─ Theories            ← outer: sequence the theories
+       └─ Spec           ← middle: specify one theory
+            └─ Spike     ← tech scout: prove technology choices work
+                 └─ TDD  ← inner: Red → Green → Inspect → Refactor → Confirm
 ```
+
+**TDD → Spike** — unresolved technology dependencies in the spec that need proving before tests can be written.
 
 **TDD → Spec** — a test can't be written without assumptions the spec doesn't cover, or a job is missing from the spec.
 
 **TDD → Theories** — the theory is too big for one slice, has an unmet dependency, or doesn't improve the current state as expected.
+
+**Spike → Spec** — spiking reveals the headline interaction isn't feasible with available technology, or a supporting job needs redesigning.
+
+**Spike → Theories** — the technology required is prohibitively complex or expensive, making the theory not worth pursuing.
 
 **Spec → Theories** — the theory can't be described as a single thin slice, or the napkin sketch reveals it requires capabilities from a different theory.
 
