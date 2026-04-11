@@ -25,6 +25,17 @@ The spec contains a headline interaction, supporting jobs, and a napkin sketch. 
 
 Use the spec to propose a testing order — outside-in, starting from the headline interaction.
 
+**Discover available tooling.** Before writing any code, identify the project's automated feedback loops. Check for:
+
+- **Test runner** — how to run tests (e.g. `npm test`, `dotnet test`, `pytest`)
+- **Type checker** — e.g. `tsc --noEmit`, `mypy`, `dotnet build`
+- **Linter** — e.g. `eslint`, `ruff`, `dotnet format --verify-no-changes`
+- **Build step** — if compilation is needed before tests can run
+
+Look at `package.json` scripts, `Makefile`, CI config, or project files to find what's available. Record the commands in `PROGRESS.md` → *Tooling* so they carry forward between sessions. If nothing is configured yet, propose a minimal setup to the user — a project without a type checker or linter is missing feedback that prevents avoidable errors.
+
+Throughout this skill, **"run the checks"** means: run all discovered tools, not just the tests. A passing test suite with type errors or lint violations is not green.
+
 **The first test is a tracer bullet.** It must go end-to-end through the headline interaction with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any job gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service). Later tests drive out the real shape of each job.
 
 **STOP here and wait for the user to confirm the order before proceeding.**
@@ -43,6 +54,12 @@ Structure:
 - **Spec**: <path or GH issue URL>
 - **Status**: <which job, which phase — Red/Green/Inspect/Refactor>
 - **Last session ended**: <date + brief marker>
+
+## Tooling
+- **Test runner**: <command>
+- **Type checker**: <command or "none">
+- **Linter**: <command or "none">
+- **Build**: <command or "none">
 
 ## Architectural snapshot
 <key modules, responsibilities, and collaborations — updated after each completed theory>
@@ -83,7 +100,7 @@ Rules:
 - **Usage-driven** — reference it in the test before it exists. The compiler/runtime error is your signal to create it
 - **Behaviour, not implementation** — test what the software does, not how it's structured
 
-Run the test. Confirm it fails for the right reason.
+Run the checks. Confirm the test fails for the right reason — a type error or lint violation is not the right reason. Fix tooling issues before evaluating the test failure.
 
 ### Step 2: Green
 
@@ -93,7 +110,7 @@ Do not introduce abstractions (interfaces, design patterns, base classes) until 
 
 If you're tempted to introduce a mock to get green, first ask whether a three-line real implementation would do. Reach for a mock only when the real version would drag in another responsibility or cross an external boundary.
 
-Run the tests. Confirm they all pass.
+Run the checks — tests, type checker, linter. All must pass. If the type checker or linter flags issues in code you just wrote, fix them now — they're part of getting to green, not a separate step.
 
 ### Step 3: Inspect
 
@@ -115,7 +132,7 @@ Report findings. If everything is clean, say so and move on.
 ### Step 4: Refactor
 
 If inspection found issues, fix them **one at a time**. After each refactoring:
-- Run all tests — they must still pass
+- Run the checks — tests, types, and lint must all still pass
 - Name the smell you fixed and the refactoring you applied
 
 Do not refactor and add behaviour in the same step.
@@ -126,7 +143,7 @@ Show the user:
 - What behaviour was implemented
 - The test that was written
 - Any refactorings applied
-- Current state — all tests passing
+- Current state — all checks passing (tests, types, lint)
 
 **Update `PROGRESS.md`** → *Current work* and *Next step*.
 
