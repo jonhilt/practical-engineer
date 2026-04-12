@@ -10,7 +10,7 @@ Six skills, used in order:
 |---|---|
 | **Goals** | Interview about the problem space, produce a Goals Document |
 | **Theories** | Turn the Goals Document into testable theories — hypotheses about what might solve the problem |
-| **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and napkin sketch |
+| **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and system sketch |
 | **Spike** | Resolve technology unknowns from the spec — research options, build throwaway proofs, record decisions |
 | **Slice** | Map the spec onto concrete modules in the codebase — identify the full vertical slice (UI, API, domain, data) and the entry point where the tracer bullet begins |
 | **TDD** | Implement one theory through strict outside-in TDD, driven by the slice plan |

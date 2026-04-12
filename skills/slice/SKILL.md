@@ -4,7 +4,7 @@ description: Turn the spec (and spike decisions, if any) into a concrete vertica
 argument-hint: "[optional: path to the Spec]"
 ---
 
-Bridge the spec's user-language description to the codebase's module structure. The napkin sketch says *"something renders the editor"* — your job is to say *"the `<WriteScreen>` component at `apps/web/src/features/write/WriteScreen.tsx` renders it."*
+Bridge the spec's user-language description to the codebase's module structure. The system sketch says *"something renders the editor"* — your job is to say *"the `<WriteScreen>` component at `apps/web/src/features/write/WriteScreen.tsx` renders it."*
 
 A vertical slice is the full stack a feature touches — UI, API, domain, data, external. TDD without a slice plan drifts to the easiest starting point (usually a backend unit) and quietly drops the UI.
 
@@ -90,7 +90,7 @@ Update spec status to `Spec ready, slice planned, awaiting /tdd`.
 
 ## Loop-backs
 
-Go back to `/spec` if supporting jobs are too vague to map onto modules, or the napkin sketch assumes a data flow the codebase can't support.
+Go back to `/spec` if supporting jobs are too vague to map onto modules, or the system sketch assumes a data flow the codebase can't support.
 
 Go back to `/spike` if planned modules depend on a technology choice that wasn't validated or turns out wrong.
 
