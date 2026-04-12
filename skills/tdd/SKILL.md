@@ -21,9 +21,11 @@ Check the theory's **Requires** field. This determines how you write assertions:
 - GH mode: `gh issue view <number>`.
 - Local mode: load the spec file under `./specs/`.
 
-The spec contains a headline interaction, supporting jobs, and a napkin sketch. If a `/spike` was run, it also contains a **Technology Decisions** section with concrete choices, proved constraints, and key integration details — use these when writing tests and production code. If the spec has unresolved `LLM:` or `API:` dependencies in the Requires field and no Technology Decisions section, stop and run `/spike` first.
+The spec contains a headline interaction, supporting jobs, and a napkin sketch. If a `/spike` was run, it also contains a **Technology Decisions** section with concrete choices, proved constraints, and key integration details. If `/slice` was run, it also contains a **Vertical Slice** section naming the concrete modules the slice touches, the tracer bullet in codebase terms, and the TDD order.
 
-Use the spec to propose a testing order — outside-in, starting from the headline interaction.
+**Use the Vertical Slice as the literal plan for TDD.** The slice identifies which layers the feature touches, which files get modified or created, and — critically — whether there is a UI layer. If a `/slice` has not been run and the theory involves multiple layers (especially UI + backend), stop and run `/slice` first. Do not improvise a testing order that quietly drops the UI layer.
+
+If the spec has unresolved `LLM:` or `API:` dependencies in the Requires field and no Technology Decisions section, stop and run `/spike` first.
 
 **Discover available tooling.** Before writing any code, identify the project's automated feedback loops. Check for:
 
@@ -36,7 +38,9 @@ Look at `package.json` scripts, `Makefile`, CI config, or project files to find 
 
 Throughout this skill, **"run the checks"** means: run all discovered tools, not just the tests. A passing test suite with type errors or lint violations is not green.
 
-**The first test is a tracer bullet.** It must go end-to-end through the headline interaction with real code, however crude — a hardcoded value, an in-memory list, a plain function. This proves the whole slice hangs together before any job gets fleshed out. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service). Later tests drive out the real shape of each job.
+**The first test is the tracer bullet named in the Vertical Slice section.** It must go end-to-end through every layer the slice lists — if the slice has a UI layer, the tracer bullet starts from the UI (rendering a component, simulating a user action), not from a backend unit. Use real code however crude — hardcoded values, in-memory stores, plain functions. Mocks are only permitted when a collaborator crosses an external boundary (network, filesystem, time, third-party service). Later tests drive out the real shape of each supporting job.
+
+If no slice plan exists and you find yourself defaulting to a backend unit test while the headline interaction clearly involves a UI, stop and run `/slice` first.
 
 **STOP here and wait for the user to confirm the order before proceeding.**
 
@@ -195,6 +199,11 @@ When ready, remind the user to pick the next theory and run `/spec` on it.
 ## Loop-back triggers
 
 `/tdd` is the innermost loop. If it reveals an outer loop's input is wrong, stop and go back — don't force it.
+
+Stop and go back to `/slice` if:
+- A test needs a module the slice plan didn't identify.
+- Implementation reveals a layer that was missed (especially a UI layer that should have been there).
+- The slice plan's tracer bullet turns out not to traverse the full stack it claimed to.
 
 Stop and go back to `/spec` if:
 - A test can't be written without making assumptions the spec doesn't cover.

@@ -84,10 +84,10 @@ Update *Current work*:
 ~~~markdown
 - **Theory**: <number and name>
 - **Spec**: <path or GH issue URL>
-- **Status**: Technology validated, ready for /tdd.
+- **Status**: Technology validated, ready for /slice.
 ~~~
 
-And *Next step*: `Run /tdd on theory <number>`.
+And *Next step*: `Run /slice on theory <number>`.
 
 Add any constraints or surprises to *Decisions not visible from code* — these are exactly the kind of thing a future session can't reconstruct from the code alone.
 

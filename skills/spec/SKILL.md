@@ -89,17 +89,17 @@ Do not include code, test implementations, or technology choices.
 
 Present the Spec and ask for sign-off.
 
-Check the **Requires** field. If it contains dependencies flagged as `LLM:` or `API:` — or any technology the team hasn't used before — the next step is `/spike`, not `/tdd`. Deterministic-only specs with no unknowns can skip straight to `/tdd`.
+Check the **Requires** field. If it contains dependencies flagged as `LLM:` or `API:` — or any technology the team hasn't used before — the next step is `/spike`. Otherwise, the next step is `/slice` to map the spec onto concrete modules in the codebase before TDD begins.
 
 **Update `PROGRESS.md`** → *Current work*:
 
 ~~~markdown
 - **Theory**: <number and name>
 - **Spec**: <path or GH issue URL>
-- **Status**: Spec written, ready for /spike (or /tdd if no unknowns).
+- **Status**: Spec written, ready for /spike (or /slice if no unknowns).
 ~~~
 
-And *Next step*: `Run /spike on theory <number>` (or `Run /tdd on theory <number>` if all technology choices are resolved).
+And *Next step*: `Run /spike on theory <number>` (or `Run /slice on theory <number>` if all technology choices are resolved).
 
 ## Loop-back triggers
 
