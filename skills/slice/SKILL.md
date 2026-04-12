@@ -41,9 +41,9 @@ Once all jobs are mapped, name the first test TDD will write. It must:
 - **Traverse every layer listed** — if the slice has a UI layer, the tracer bullet starts from the UI (rendering a component, simulating a user action) and reaches through to the data layer. Mocks only at external boundaries.
 - **Be named concretely** — not *"test the headline interaction"* but *"render `<WriteScreen>`, type into the markdown editor, click save, assert the draft appears in the list of drafts."*
 
-### Order the remaining tests
+### Supporting jobs to cover
 
-List each supporting job and which layer's tests it drives out. This becomes TDD's working agenda after the tracer bullet.
+List each supporting job with a one-line note on roughly where it lives in the module map (layer + file if known). This is *scope*, not *sequence* — TDD decides the order based on what each red-green cycle teaches it, and jobs are not 1:1 with tests. One behavioural test may cover several jobs; some jobs may only be exercised through outer tests and never earn their own.
 
 ## Write the Vertical Slice section
 
@@ -71,10 +71,9 @@ Append this to the spec:
 **Tracer bullet:**
 <concrete test description — names the entry point, user action, assertion. Traverses every layer above.>
 
-**TDD order:**
-1. Tracer bullet — <what it drives out>
-2. <supporting job>: <layer, rough test>
-3. ...
+**Supporting jobs to cover (scope, not sequence):**
+- <job>: <one-line note on roughly where it lives in the module map>
+- <job>: ...
 </slice-template>
 
 Update spec status to `Spec ready, slice planned, awaiting /tdd`.

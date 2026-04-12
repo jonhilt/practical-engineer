@@ -13,11 +13,11 @@ Check the spec's **Requires** field to decide assertion style:
 
 ## Read the spec and slice
 
-Load the spec. It should contain a **Vertical Slice** section from `/slice` naming the concrete modules the slice touches, the tracer bullet in codebase terms, and the TDD order. **Use this as the literal plan for TDD.**
+Load the spec. It should contain a **Vertical Slice** section from `/slice` naming the concrete modules the slice touches, the tracer bullet in codebase terms, and the supporting jobs to cover. **Treat this as a design map, not a script.** Only the tracer bullet is fixed — it sets the direction. Everything after it emerges from the cycle.
 
 If the spec has unresolved `LLM:` or `API:` dependencies with no Technology Decisions section, stop and run `/spike` first.
 
-If the theory involves multiple layers (especially UI + backend) and no Vertical Slice section exists, stop and run `/slice` first. Do not improvise a testing order that quietly drops the UI layer.
+If the theory involves multiple layers (especially UI + backend) and no Vertical Slice section exists, stop and run `/slice` first. Do not improvise a starting point that quietly drops the UI layer.
 
 ## Discover tooling
 
@@ -29,6 +29,16 @@ Identify the project's automated feedback loops. Check `package.json`, `Makefile
 - **Build step** — if compilation is needed before tests run
 
 Throughout this skill, **"run the checks"** means: run all discovered tools, not just the tests. A passing test suite with type errors or lint violations is not green. If nothing is configured yet, propose a minimal setup — a project without a type checker or linter is missing feedback that prevents avoidable errors.
+
+## How tests emerge
+
+Keep a running list of tests in mind — the slice's headline interaction and supporting jobs give you the first draft. This is Beck's *"running conversation with yourself,"* not a prescribed sequence. Items get added, re-ordered, or deleted as each red-green cycle teaches you what's needed next. Supporting jobs are **requirements scope**, not a 1:1 test map: one behavioural test may cover several jobs, and some jobs only get exercised through outer tests.
+
+Every test verifies **behaviour**, not implementation. Behaviour is what the software does from the outside — inputs, outputs, observable effects through the public interface. Implementation is how it does it — internal structure, method calls, private state, collaborator sequencing.
+
+A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,169.18 monthly"* — stable across any refactoring of the internals. A test that asserts *"calculateCompoundInterest was called before calculateMonthlyPayment"* breaks the moment you refactor, and prevents the refactoring that tests exist to enable. If a test can't survive renaming a private method or extracting a helper, it's coupled to implementation and should be rewritten or deleted.
+
+Start tests at the outer layer the slice identifies (UI or API for user-facing features). Drill inward only when an outer test forces a new unit into existence. Internal helpers don't earn their own tests unless something explicitly demands one.
 
 ## The cycle
 
