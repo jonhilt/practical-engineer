@@ -13,7 +13,7 @@ Check the spec's **Requires** field to decide assertion style:
 
 ## Read the spec and slice
 
-Load the spec. It should contain a **Vertical Slice** section from `/slice` naming the concrete modules the slice touches, the tracer bullet in codebase terms, and the supporting jobs to cover. **Treat this as a design map, not a script.** Only the tracer bullet is fixed — it sets the direction. Everything after it emerges from the cycle.
+Load the spec. It should contain a **Vertical Slice** section from `/slice` naming the concrete modules the slice touches, the entry point the tracer bullet will start from, and the supporting jobs to cover. **Treat this as a design map, not a script.** Only the entry point and layer stack are fixed — they set the direction. The tests themselves emerge from the cycle.
 
 If the spec has unresolved `LLM:` or `API:` dependencies with no Technology Decisions section, stop and run `/spike` first.
 
@@ -55,7 +55,7 @@ Propose the test — describe the behaviour it will verify and which job from th
 
 Run the checks. Confirm the test fails for the right reason — a type error or lint violation is not the right reason.
 
-**The first test is the tracer bullet named in the Vertical Slice.** It must traverse every layer the slice lists — if the slice has a UI layer, it starts from the UI. Real code however crude, mocks only at external boundaries.
+**The first test is a tracer bullet** — a single test that traverses every layer the Vertical Slice lists, beginning at the entry point the slice identifies. If the slice has a UI layer, the tracer bullet starts from the UI (rendering the entry-point component, simulating a user action). Real code however crude, mocks only at external boundaries. TDD chooses what the test actually asserts; the slice just says where it starts.
 
 ### 2. Green
 

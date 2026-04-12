@@ -34,12 +34,15 @@ Walk through each supporting job one at a time. For each, answer:
 
 **If the headline interaction involves a UI, the slice has a UI layer.** Don't let TDD quietly drop the UI by omitting it here.
 
-### Name the tracer bullet
+### Identify the entry point
 
-Once all jobs are mapped, name the first test TDD will write. It must:
+Name the outermost component, endpoint, or function the user (or caller) hits first when exercising the headline interaction. This is the architectural starting point for TDD's tracer bullet — the test that traverses the whole slice will begin here.
 
-- **Traverse every layer listed** — if the slice has a UI layer, the tracer bullet starts from the UI (rendering a component, simulating a user action) and reaches through to the data layer. Mocks only at external boundaries.
-- **Be named concretely** — not *"test the headline interaction"* but *"render `<WriteScreen>`, type into the markdown editor, click save, assert the draft appears in the list of drafts."*
+- **UI feature** — the top-level screen or component (e.g. `<WriteScreen>` at `apps/web/src/features/write/`)
+- **API-only feature** — the handler or endpoint
+- **Domain library** — the public entry function
+
+This is not the test itself. TDD decides what the first test looks like when it gets there. The slice just commits to *where* that test begins.
 
 ### Supporting jobs to cover
 
@@ -68,8 +71,8 @@ Append this to the spec:
 **Conventions followed:**
 - <e.g. feature folder at `apps/web/src/features/write/`, minimal API endpoint pattern>
 
-**Tracer bullet:**
-<concrete test description — names the entry point, user action, assertion. Traverses every layer above.>
+**Entry point:**
+<outermost component/endpoint/function the user or caller hits first — e.g. `<WriteScreen>` at `apps/web/src/features/write/`>
 
 **Supporting jobs to cover (scope, not sequence):**
 - <job>: <one-line note on roughly where it lives in the module map>
