@@ -1,12 +1,12 @@
 ---
 name: slice
-description: Turn the spec (and spike decisions, if any) into a concrete vertical slice plan — which modules get touched, which are new, which existing code is modified, and where TDD's tracer bullet will start. Use after /spec (or /spike) and before /tdd.
+description: Turn the spec (and spike decisions, if any) into a concrete vertical slice design — which modules get touched, which are new, which existing capabilities are extended, and where TDD's tracer bullet will start. Use after /spec (or /spike) and before /tdd.
 argument-hint: "[optional: path to the Spec]"
 ---
 
-Bridge the spec's user-language description to the codebase's module structure. The system sketch says *"something renders the editor"* — your job is to say *"the `<WriteScreen>` component at `apps/web/src/features/write/WriteScreen.tsx` renders it."*
+Bridge the spec's user-language description to the system's design: surface the modules and responsibilities this theory touches — which are new, which already exist and will be extended — and check them with the user before writing anything. File paths belong to TDD.
 
-A vertical slice is the full stack a feature touches — UI, API, domain, data, external. TDD without a slice plan drifts to the easiest starting point (usually a backend unit) and quietly drops the UI.
+A vertical slice is the full stack a feature touches — UI, API, domain, data, external. TDD without a slice design drifts to the easiest starting point (usually a backend unit) and quietly drops the UI.
 
 ## Read the spec
 
@@ -14,39 +14,40 @@ Load the spec and any Technology Decisions from `/spike`. Summarise back: the he
 
 ## Explore the codebase
 
-Build a mental model of what already exists — real exploration, not guessing. For each supporting job, look for:
+Build a mental model of the system's design — what modules exist, what they're responsible for, how they're meant to be used. For each supporting job, look for:
 
-- **Existing modules** that match the responsibility
-- **Codebase conventions** — monorepo layout, feature folders, layering patterns, how new features are typically added
-- **Frontend layer** — framework, feature folder pattern, how screens handle state and API calls
-- **Data layer** — where entities live, persistence approach
+- **Existing modules and capabilities** that match the responsibility
+- **Design patterns in use** — how features are organised and composed
+- **Conventions to follow**
 
-Use the Explore subagent or Grep/Glob directly. Be specific about files you looked at and patterns you found. The user knows things about the codebase you can't read from files — present findings and invite correction.
+Use the Explore subagent or Grep/Glob directly. Your output is design understanding, not a file inventory.
 
 ## Plan the slice
 
-Walk through each supporting job one at a time. For each, answer:
+For each supporting job:
 
-1. **Which layers does it touch?** UI, API, domain, data, external. If a job only touches backend, say so — don't manufacture a UI concern.
-2. **Existing modules to modify** — concrete file paths and what changes
-3. **New modules to create** — concrete file paths and what responsibility they own
+1. **Layers touched** — UI, API, domain, data, external. Don't manufacture a concern that isn't there.
+2. **Existing modules to extend** — what they already own, what this job asks of them
+3. **New modules to introduce** — the responsibility each owns
 4. **Dependencies** — other jobs that must exist first
 
-**If the headline interaction involves a UI, the slice has a UI layer.** Don't let TDD quietly drop the UI by omitting it here.
+**If the headline interaction involves a UI, the slice has a UI layer.** Don't let TDD quietly drop it.
 
 ### Identify the entry point
 
-Name the outermost component, endpoint, or function the user (or caller) hits first when exercising the headline interaction. This is where TDD's **tracer bullet** — a lean-but-complete end-to-end slice of production code — will begin. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
+Name the outermost module the user (or caller) hits first. This is where TDD's **tracer bullet** — a lean-but-complete end-to-end slice of production code — will begin. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
 
-- **UI feature** — the top-level screen or component (e.g. `<WriteScreen>` at `apps/web/src/features/write/`)
-- **API-only feature** — the handler or endpoint
-- **Domain library** — the public entry function
-
-The slice commits to *where* the tracer bullet begins. TDD decides what the first test looks like when it gets there.
+Name it by responsibility, not location. The slice commits to *which* module; TDD finds the file and decides the first test.
 
 ### Supporting jobs to cover
 
-List each supporting job with a one-line note on roughly where it lives in the module map (layer + file if known). This is *scope*, not *sequence* — TDD decides the order based on what each red-green cycle teaches it, and jobs are not 1:1 with tests. One behavioural test may cover several jobs; some jobs may only be exercised through outer tests and never earn their own.
+List each supporting job with a one-line note on which layer and module it lives in. This is *scope*, not *sequence* — TDD decides the order, and jobs aren't 1:1 with tests.
+
+## Present the design
+
+Show the user the modules and responsibilities: which are new, which exist and will be extended, and which module the entry point sits in. Ask: *"Does this fit how the system is organised? Am I missing anything?"*
+
+The user knows things the files don't say. Incorporate corrections before writing.
 
 ## Write the Vertical Slice section
 
@@ -56,27 +57,23 @@ Append this to the spec:
 ## Vertical Slice
 
 **Layers touched:**
-- UI: <components, or "none">
-- API: <endpoints/handlers, or "none">
-- Domain: <entities/aggregates/services>
-- Data: <storage/persistence>
-- External: <APIs/services>
+- UI: <modules, or "none">
+- API: <modules, or "none">
+- Domain: <modules>
+- Data: <modules>
+- External: <modules>
 
-**Existing modules to modify:**
-- `<path>`: <what changes and why>
+**Existing modules to extend:**
+- <module>: <what it already owns, what this theory adds>
 
-**New modules to create:**
-- `<path>`: <responsibility>
-
-**Conventions followed:**
-- <e.g. feature folder at `apps/web/src/features/write/`, minimal API endpoint pattern>
+**New modules to introduce:**
+- <module>: <responsibility — one thing, thin interface>
 
 **Entry point:**
-<outermost component/endpoint/function the user or caller hits first — e.g. `<WriteScreen>` at `apps/web/src/features/write/`>
+<named module the caller hits first>
 
-**Supporting jobs to cover (scope, not sequence):**
-- <job>: <one-line note on roughly where it lives in the module map>
-- <job>: ...
+**Supporting jobs (scope, not sequence):**
+- <job>: <layer + module>
 </slice-template>
 
 Update spec status to `Spec ready, slice planned, awaiting /tdd`.
