@@ -4,98 +4,134 @@ description: Implement one theory through strict outside-in TDD, driven by the v
 argument-hint: "[optional: path to the theory's Spec]"
 ---
 
-Write code in small, verified steps. Nothing exists unless a test demands it.
+Implement one theory through strict outside-in TDD in three phases: **Plan → Tracer bullet → Loop**.
+
+Every test verifies **behaviour**, not implementation. Behaviour is what the software does from the outside — inputs, outputs, observable effects through the public interface. Implementation is how it does it — internal structure, private state, which collaborator was called.
+
+A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,169.18 monthly"* — stable across any refactoring of the internals. **Do not write tests that are coupled to implementation.**
+
+## Read what you need
+
+Load the spec and its **Vertical Slice** section from `/slice`. The slice names the entry point, the modules the slice touches, and the supporting jobs to cover.
+
+- No Vertical Slice section? Stop and run `/slice` first.
+- Unresolved `LLM:` or `API:` dependencies with no Technology Decisions section? Stop and run `/spike` first.
 
 Check the spec's **Requires** field to decide assertion style:
 
 - **Deterministic** — assert specific values
-- **Non-deterministic** (LLMs, AI, generative services) — assert **contracts**: structural requirements, content coverage, qualities, and constraints. Properties any correct output would have, regardless of the specific words used.
-
-## Read the spec and slice
-
-Load the spec. It should contain a **Vertical Slice** section from `/slice` naming the concrete modules the slice touches, the entry point the tracer bullet will start from, and the supporting jobs to cover. **Treat this as a design map, not a script.** Only the entry point and layer stack are fixed — they set the direction. The tests themselves emerge from the cycle.
-
-If the spec has unresolved `LLM:` or `API:` dependencies with no Technology Decisions section, stop and run `/spike` first.
-
-If the theory involves multiple layers (especially UI + backend) and no Vertical Slice section exists, stop and run `/slice` first. Do not improvise a starting point that quietly drops the UI layer.
+- **Non-deterministic** (LLMs, AI, generative services) — assert **contracts**: structure, coverage, qualities, constraints any correct output would have regardless of specific words used
 
 ## Discover tooling
 
-Identify the project's automated feedback loops. Check `package.json`, `Makefile`, CI config, or project files for:
+Identify the project's automated feedback loops — test runner, type checker, linter, build. Throughout this skill, **"run the checks"** means all of them. A passing test suite with type errors or lint violations is not green. If a layer isn't configured, propose a minimal setup before starting.
 
-- **Test runner** — e.g. `npm test`, `dotnet test`, `pytest`
-- **Type checker** — e.g. `tsc --noEmit`, `mypy`, `dotnet build`
-- **Linter** — e.g. `eslint`, `ruff`
-- **Build step** — if compilation is needed before tests run
+---
 
-Throughout this skill, **"run the checks"** means: run all discovered tools, not just the tests. A passing test suite with type errors or lint violations is not green. If nothing is configured yet, propose a minimal setup — a project without a type checker or linter is missing feedback that prevents avoidable errors.
+## Phase 1 — Plan (stop for approval)
 
-## How tests emerge
+Do not write any test until the user has approved this plan. Write it as a short message back to the user with four sections.
 
-Keep a running list of tests in mind — the slice's headline interaction and supporting jobs give you the first draft. This is Beck's *"running conversation with yourself,"* not a prescribed sequence. Items get added, re-ordered, or deleted as each red-green cycle teaches you what's needed next. Supporting jobs are **requirements scope**, not a 1:1 test map: one behavioural test may cover several jobs, and some jobs only get exercised through outer tests.
+### 1. Interface changes
 
-Every test verifies **behaviour**, not implementation. Behaviour is what the software does from the outside — inputs, outputs, observable effects through the public interface. Implementation is how it does it — internal structure, method calls, private state, collaborator sequencing.
+Name the public API this theory will introduce or change — function signatures, HTTP routes, UI entry points. No internal types, no private helpers. What does the *outside* of the change look like?
 
-A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,169.18 monthly"* — stable across any refactoring of the internals. A test that asserts *"calculateCompoundInterest was called before calculateMonthlyPayment"* breaks the moment you refactor, and prevents the refactoring that tests exist to enable. If a test can't survive renaming a private method or extracting a helper, it's coupled to implementation and should be rewritten or deleted.
+Confirm this is the shape the user expects. A wrong interface caught here costs nothing; caught after the tracer bullet, it costs a rewrite.
 
-Start tests at the outer layer the slice identifies (UI or API for user-facing features). Drill inward only when an outer test forces a new unit into existence. Internal helpers don't earn their own tests unless something explicitly demands one.
+### 2. Examples (specification by example)
 
-## The cycle
+Ask the user for concrete input→output examples — Gojko Adzic's *specification by example*. *"For input X, the system produces Y."* Each example becomes a test assertion.
 
-Work through ONE test at a time. For each test, follow these steps in order. Do not combine steps.
+If the user can't give a concrete example for a behaviour, that behaviour isn't defined clearly enough yet — loop back to `/spec`.
 
-### 1. Red
+### 3. Deep modules
 
-Propose the test — describe the behaviour it will verify and which job from the spec it exercises. Write a single failing test.
+Note where in the slice **deep modules** (Ousterhout) make sense — modules with a **small interface hiding substantial implementation**. A function with two parameters and 200 lines of non-trivial logic behind it is deep. A class with twenty one-line methods that forward to a collaborator is shallow — cost without value.
+
+This is a *note about where to aim during refactoring*, not a list of classes to build up-front. Abstractions still emerge from duplication; deep modules are the shape you reach for *when* an abstraction is forced into being.
+
+### 4. Behaviours to test
+
+List the observable behaviours this theory must exhibit, phrased from the outside:
+
+- Good: *"When a user submits the form with a valid email, they see a confirmation screen."*
+- Bad: *"UserService.save is called with the form data."*
+
+The headline interaction from the spec is the first entry. Supporting jobs fan out from there. This list is a draft — Beck's *"running conversation with yourself"* — items will be added, reordered, or deleted as cycles teach you what's needed.
+
+### Present and wait
+
+Show the user all four sections. Wait for explicit approval. Revise if asked. Do not proceed to Phase 2 without it.
+
+---
+
+## Phase 2 — Tracer bullet
+
+Write **one test that confirms one assumption**: that the architecture chosen in the slice actually carries the headline behaviour end-to-end.
+
+- Start at the outer layer the slice names (UI or API for user-facing features)
+- Drive through every layer the slice lists
+- Real collaborators in-process; mock only at external boundaries
+- The production code is lean-but-complete: real structure, real error handling, real checks — just not fully functional yet. Not throwaway. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
+
+Run the full TDD cycle from Phase 3 (Red → Green → Refactor → Checklist) on this one test.
+
+If the assumption doesn't hold — the architecture can't carry the behaviour without contortion — stop and loop back to `/slice`. Don't muscle through.
+
+---
+
+## Phase 3 — Incremental loop
+
+For each remaining behaviour on the Plan, run one cycle. Work through **one behaviour at a time**. Do not combine steps.
+
+### Red
+
+Write one failing test for one behaviour.
 
 - **Assert first** — write the assertion, then work backwards
 - **One outcome per test** — exactly one assertion
-- **Usage-driven** — reference the thing in the test before it exists. The compiler/runtime error is your signal to create it.
+- **Usage-driven** — reference the thing in the test before it exists; the compiler/runtime error is the signal to create it
 - **Behaviour, not implementation**
 
-Run the checks. Confirm the test fails for the right reason — a type error or lint violation is not the right reason.
+Run the checks. Confirm the test fails for the *right reason* — a type error or lint violation is not the right reason.
 
-**The first cycle drives out a tracer bullet** — a lean-but-complete slice of *production code* that goes end-to-end through every layer the Vertical Slice lists, starting at the entry point the slice identifies. Production code, not throwaway: real structure, real error handling, real checks — just not fully functional yet. Subsequent cycles extend it; the skeleton stays. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
-
-If the slice has a UI layer, the tracer bullet starts from the UI — the first test renders the entry-point component and simulates a user action. Mocks only at external boundaries. TDD chooses what the test actually asserts; the slice just says where the tracer bullet begins.
-
-### 2. Green
+### Green
 
 Write the simplest code that makes the test pass. No more.
 
-Do not introduce abstractions (interfaces, design patterns, base classes) until duplication or a failing test forces them.
+Do not introduce abstractions (interfaces, base classes, patterns) until duplication or a failing test forces them.
 
-If tempted to mock, first ask whether a three-line real implementation would do. Mock only when the real version drags in another responsibility or crosses an external boundary.
+If tempted to mock, first ask whether a three-line real implementation would do. Full rules in [mocking.md](mocking.md); once a double is justified, [test-doubles.md](test-doubles.md) says which kind to reach for.
 
-Run the checks. If the type checker or linter flags issues in code you just wrote, fix them now — they're part of green.
+Run the checks. Type and lint issues in code you just wrote are part of green — fix them now.
 
-### 3. Inspect
+### Refactor
 
-Review all code added or changed:
+Scan the code you just touched against [refactor-candidates.md](refactor-candidates.md) (smell→refactoring lookup) and [shoc.md](shoc.md) (Gorman's SHOC).
 
-1. **Comprehensible** — Could someone unfamiliar read this?
-2. **DRY** — Any duplication? Rule of Three (tolerate two, refactor at three).
-3. **Simple** — No nested conditionals, no lengthy methods.
-
-Then apply Gorman's SHOC principles — see [../principles/shoc.md](../principles/shoc.md).
-
-Report findings. If clean, say so and move on.
-
-### 4. Refactor
-
-Fix issues one at a time. After each refactoring, run the checks — tests, types, and lint must all pass. Name the smell fixed and the refactoring applied.
+Fix issues one at a time. After each refactoring, run the checks. Name the smell fixed and the refactoring applied.
 
 Do not refactor and add behaviour in the same step.
 
-### 5. Confirm
+### Quality checklist
 
-Show the user: the behaviour implemented, the test written, any refactorings applied, current state — all checks passing.
+Tick each box before declaring the cycle done. Any unchecked box is a defect — fix it before the next Red.
+
+- [ ] **Test describes behaviour** — reads as what the system does, not how
+- [ ] **Test uses public interfaces only** — no private methods, no internal state, no back-door access
+- [ ] **Test would survive an internal refactor** — rename a private method, extract a helper, swap a data structure: the test still passes
+- [ ] **Production code is minimal** — no speculative features, no hypothetical future parameters, no abstractions without a second forcing test
+- [ ] **Mocks (if any) cross external boundaries only** — no in-process collaborators doubled
+
+Report findings to the user: behaviour implemented, test written, refactorings applied, checklist state.
+
+---
 
 ## Completion
 
-When the headline interaction and all supporting jobs are covered by passing tests, summarise what was built, any design patterns that emerged, and remaining inspection concerns.
+When the headline interaction and all planned behaviours are covered by passing tests, summarise what was built, any design patterns that emerged, and remaining concerns.
 
-**Mocked dependencies** — any that remain should only cross external boundaries or be explicitly deferred to a later theory. In-process collaborators should be real. If any aren't, the tracer bullet leaked into horizontal layering — revisit.
+**Final mock audit** — any remaining doubles should cross external boundaries or be explicitly deferred to a later theory. If in-process collaborators are mocked, the tracer bullet leaked into horizontal layering — revisit.
 
 **Close out** — update the spec status to `Done`. If using GitHub issues, close the theory issue and tick it in the parent goal's Theories checklist.
 
@@ -105,8 +141,6 @@ If the theory didn't hold, loop back to `/theories` to revise.
 
 ## Loop-backs
 
-Go back to `/slice` if a test needs a module the slice plan didn't identify, or implementation reveals a layer that was missed (especially UI).
-
-Go back to `/spec` if a test can't be written without making assumptions the spec doesn't cover, or a job is missing.
-
-Go back to `/theories` if the theory is too large to complete as one thin slice, or clearly doesn't improve the current state as intended.
+- **`/slice`** — if a test needs a module the slice plan didn't identify, or a layer (especially UI) was missed, or the tracer bullet's architectural assumption failed
+- **`/spec`** — if a test can't be written without assumptions the spec doesn't cover, or a behaviour/example is missing
+- **`/theories`** — if the theory is too large for one thin slice, or clearly doesn't improve the current state as intended

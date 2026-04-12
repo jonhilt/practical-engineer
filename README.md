@@ -49,10 +49,11 @@ Session-level state (progress logs, blockers, parked questions) is intentionally
 
 ## Shared principles
 
-Some concepts are referenced by multiple skills and live in `skills/principles/`:
+Concepts referenced by more than one skill live in `skills/principles/`:
 
-- [`shoc.md`](skills/principles/shoc.md) — Gorman's SHOC principles (Swappable, Hides internals, One job, Client-driven interfaces), used during TDD inspection and refactoring.
 - [`tracer-bullets.md`](skills/principles/tracer-bullets.md) — Hunt & Thomas's tracer bullet concept (lean-but-complete production code that grows), referenced by slice and TDD.
+
+Principles used by a single skill live next to that skill's `SKILL.md` — e.g. `skills/tdd/shoc.md` (Gorman's SHOC), `skills/tdd/refactor-candidates.md` (smell→refactoring lookup), `skills/tdd/mocking.md` and `skills/tdd/test-doubles.md`.
 
 ## Install
 
