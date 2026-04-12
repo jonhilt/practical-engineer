@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Implement one theory through strict outside-in TDD, driven by the vertical slice plan. Use after /slice to drive implementation from the concrete module plan and tracer bullet.
+description: Implement one theory through strict outside-in TDD, driven by the vertical slice plan. Use after /slice to drive implementation from the concrete module plan, starting with a tracer bullet through every layer.
 argument-hint: "[optional: path to the theory's Spec]"
 ---
 
@@ -55,7 +55,9 @@ Propose the test — describe the behaviour it will verify and which job from th
 
 Run the checks. Confirm the test fails for the right reason — a type error or lint violation is not the right reason.
 
-**The first test is a tracer bullet** — a single test that traverses every layer the Vertical Slice lists, beginning at the entry point the slice identifies. If the slice has a UI layer, the tracer bullet starts from the UI (rendering the entry-point component, simulating a user action). Real code however crude, mocks only at external boundaries. TDD chooses what the test actually asserts; the slice just says where it starts.
+**The first cycle drives out a tracer bullet** — a lean-but-complete slice of *production code* that goes end-to-end through every layer the Vertical Slice lists, starting at the entry point the slice identifies. Production code, not throwaway: real structure, real error handling, real checks — just not fully functional yet. Subsequent cycles extend it; the skeleton stays. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
+
+If the slice has a UI layer, the tracer bullet starts from the UI — the first test renders the entry-point component and simulates a user action. Mocks only at external boundaries. TDD chooses what the test actually asserts; the slice just says where the tracer bullet begins.
 
 ### 2. Green
 

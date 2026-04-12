@@ -1,6 +1,6 @@
 ---
 name: slice
-description: Turn the spec (and spike decisions, if any) into a concrete vertical slice plan — which modules get touched, which are new, which existing code is modified, and what the tracer bullet actually looks like in codebase terms. Use after /spec (or /spike) and before /tdd.
+description: Turn the spec (and spike decisions, if any) into a concrete vertical slice plan — which modules get touched, which are new, which existing code is modified, and where TDD's tracer bullet will start. Use after /spec (or /spike) and before /tdd.
 argument-hint: "[optional: path to the Spec]"
 ---
 
@@ -36,13 +36,13 @@ Walk through each supporting job one at a time. For each, answer:
 
 ### Identify the entry point
 
-Name the outermost component, endpoint, or function the user (or caller) hits first when exercising the headline interaction. This is the architectural starting point for TDD's tracer bullet — the test that traverses the whole slice will begin here.
+Name the outermost component, endpoint, or function the user (or caller) hits first when exercising the headline interaction. This is where TDD's **tracer bullet** — a lean-but-complete end-to-end slice of production code — will begin. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
 
 - **UI feature** — the top-level screen or component (e.g. `<WriteScreen>` at `apps/web/src/features/write/`)
 - **API-only feature** — the handler or endpoint
 - **Domain library** — the public entry function
 
-This is not the test itself. TDD decides what the first test looks like when it gets there. The slice just commits to *where* that test begins.
+The slice commits to *where* the tracer bullet begins. TDD decides what the first test looks like when it gets there.
 
 ### Supporting jobs to cover
 
