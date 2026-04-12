@@ -1,64 +1,51 @@
 ---
 name: goals
-description: Grill the user about a problem space until the business goal is crystal clear, then produce a structured Goals document. Use when the user wants to define what they're building and why, or kick off a new project.
+description: Produce a Goals Document through user interview — a focused problem statement, current state baseline, and root causes. Use when the user wants to define what they're building and why, or kick off a new project.
 argument-hint: "[optional: brief description of the idea or problem]"
 ---
 
-You are a relentless product discovery interviewer. Your job is to force clarity about the PROBLEM before anyone thinks about solutions.
+Force clarity about the PROBLEM before anyone thinks about solutions. Interview the user until you can state it in one sentence, with a measurable baseline and identified root causes.
 
-## Phase 1: Grill
+## Interview
 
-Interview the user one question at a time about the problem space. Do not stop until you fully understand:
+Push for these answers, one question at a time. If an answer might live in the codebase or existing files, explore first and confirm with the user rather than asking cold.
 
-- Who has this problem and why it matters to them
-- What they do today without a solution (or why the current solution fails)
-- How bad is it right now — push for concrete numbers: frequency, duration, failure rates, costs. If the user doesn't have data, propose ways to gather it (manual testing of current workflows, sampling, asking affected people). If no baseline can be established, flag it explicitly in the Goals Document — a theory without a baseline can't be measured
-- What are the root causes — keep asking "why" until you've identified the distinct causes behind the problem
+- **Who has this problem and why it matters to them.**
+- **What they do today** — current workflow, or why existing solutions fail.
+- **How bad it is** — push for concrete numbers (frequency, duration, failure rates, costs). If the user doesn't have data, propose ways to gather it. If no baseline can be established, flag it in the Goals Document — theories without baselines can't be measured.
+- **Root causes** — keep asking "why" until distinct causes surface.
 
-Push for a **single, focused problem statement** — not a problem space, not multiple problems. If the user describes several problems, help them pick the one that matters most right now. One sentence. One problem.
+If the user describes features, UI, or implementation, redirect: *"That's a solution — what's the problem it solves?"*
 
-If the user starts describing features, UI, or implementation, stop them. Say "That's a solution — what's the problem it solves?" and redirect.
+Push for **one focused problem statement**. One sentence. If several problems surface, help the user pick the one that matters most right now.
 
-For each question, suggest your best-guess answer so the user can confirm, correct, or expand.
+## Categorise root causes
 
-If a question can be answered by exploring the codebase or existing project files, explore them instead of asking the user.
+Walk through each root cause and tag it:
 
-## Phase 2: Categorise Root Causes
+- 🔧 **Potentially solvable by software** — friction, automation gaps, tooling, process steps
+- 🧠 **Likely not a software problem** — motivation, fear, habit, external constraints, human judgement
 
-Once the root causes are clear, walk through each one with the user and categorise it:
+Be honest. Don't force causes into the software bucket.
 
-- **Potentially solvable by software** — friction, automation, tooling gaps, process steps that could be eliminated or streamlined
-- **Likely not a software problem** — motivation, fear, habit formation, external constraints, human judgement
+## Write the Goals Document
 
-Don't force causes into the software bucket. Be honest about which ones software can't fix. The goal is to focus the theories skill on causes where building something could actually help.
+<goals-template>
+## Problem Statement
+Who, what, why — one focused problem, one sentence.
 
-## Phase 3: Synthesise
+## Current State
+What happens today. How bad it is. Any baseline data or observations.
 
-**Detect persistence mode.** Run `gh repo view --json nameWithOwner`. If it succeeds, default to **GH mode**; otherwise **local mode**. The user can override.
+## Root Causes
+- 🔧 Software-solvable: ...
+- 🧠 Not a software problem: ...
+</goals-template>
 
-Produce a **Goals Document** with exactly these sections:
+No features, solutions, user stories, technical architecture, or success criteria. Success criteria belong to individual theories — they come later.
 
-### Problem Statement
-Who has this problem, what it is, why it matters. One focused problem — not a list.
+## Output
 
-### Current State
-What happens today. How bad is it. Any data, numbers, or observations that establish a baseline. This is what we'll measure improvement against when we form theories later.
+Write to `./goals.md`. If the project uses GitHub issues, `/theories` will fold this into the goal tracking issue later.
 
-### Root Causes
-
-List each root cause with its category:
-
-- 🔧 **Potentially solvable by software:** causes where building or automating something could help
-- 🧠 **Likely not a software problem:** causes that are human, emotional, or structural — acknowledged but not targets for the theories skill
-
-Do not include features, solutions, user stories, technical architecture, implementation details, or success criteria. Success criteria belong with individual theories — they come later, when we know what we're testing. This document defines the destination, not the route.
-
-### Where to write it
-
-**Local mode** — write to `./goals.md` at the repo root.
-
-**GH mode** — the Goals Document is written into the goal tracking issue by `/theories`. No need to persist it separately here.
-
-## Phase 4: Validate
-
-Present the Goals Document and ask the user to sign off or challenge any section before moving on.
+Present the result for sign-off.

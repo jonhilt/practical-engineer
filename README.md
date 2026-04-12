@@ -56,9 +56,15 @@ Loop-backs are expected, not failures. Each pass sharpens the inputs for the nex
 
 ## Persistence
 
-Skills auto-detect whether you have a GitHub repo (`gh repo view`) and default to **GH mode** (issues, labels) or **local mode** (markdown files in the repo). You can override either way.
+Skills write artifacts to local markdown files (`./goals.md`, `./theories.md`, `./specs/*.md`) or to GitHub issues if the project uses them. Each skill picks up where the previous left off by reading the upstream artifact.
 
-A gitignored `PROGRESS.md` file carries forward context between sessions — current work, parked questions, blockers, and decisions that aren't visible from code or git history.
+Session-level state (progress logs, blockers, parked questions) is intentionally **not** part of these skills. That belongs at the orchestrator layer — a Ralph loop, an agent runtime, or your own note-taking — so the skills stay stateless and composable.
+
+## Shared principles
+
+Some concepts are referenced by multiple skills and live in `skills/principles/`:
+
+- [`shoc.md`](skills/principles/shoc.md) — Gorman's SHOC principles (Swappable, Hides internals, One job, Client-driven interfaces), used during TDD inspection and refactoring.
 
 ## Install
 

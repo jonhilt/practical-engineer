@@ -4,110 +4,69 @@ description: Turn one theory into a clear brief — headline interaction, suppor
 argument-hint: "[optional: path to Theories, or paste/describe the theory]"
 ---
 
-You are a specification writer. Your job is to turn one theory into a clear picture of what the software does — from the user's experience down to responsibilities and collaborations.
+Turn one theory into a clear picture of what the software does — from the user's experience down to responsibilities and collaborations.
 
-## Phase 1: Intake
+## Read the theory
 
-**Detect persistence mode.** Run `gh repo view --json nameWithOwner`. If it succeeds, default to **GH mode**; otherwise **local mode**. The user can override.
+Load it from `./theories.md` or a GitHub issue. Summarise it back — what this theory delivers, what aspect of the current state it improves, what it builds on.
 
-Read the theory to be specified. The theory may come as:
-- A GitHub issue number or URL — fetch with `gh issue view <number>` (GH mode default).
-- A local file — look under `./theories.md` or the path the user provides (local mode default).
+## Draw out the spec
 
-If none is provided, ask for it. Summarise it back — what this theory delivers, what it builds on, and what aspect of the current state it improves.
+Work through three sub-questions with the user. Propose, don't prescribe.
 
-**STOP here and wait for the user to confirm before proceeding to Phase 2.**
+### Headline interaction
 
-## Phase 2: Specify
+*"When this theory is working, what does the user actually see and do?"*
 
-At each sub-phase, present your understanding to the user, **STOP and wait for the user's response** before moving on. The user drives the thinking — propose, don't prescribe.
+Describe the single experience that proves this theory delivers value. Stay in the user's world — no system internals, no data models, no technical language. If the user starts describing implementation ("it calls an API"), redirect: *"That's how — what does the user experience?"*
 
-### 2a: Headline Interaction
+### Supporting jobs
 
-Ask the user: **"When this theory is working, what does the user actually see and do?"**
+*"What must the system be able to do to deliver that experience?"*
 
-Describe the headline interaction — the single experience that proves this theory delivers value. Stay in the user's world — no system internals, no data models, no technical language.
+List the capabilities that must exist to enable the headline interaction. Each job should clearly serve the headline — challenge any that don't. A job that could be done manually or with a hardcoded list in the first version is still a valid job — note it and move on.
 
-If the user starts describing implementation ("it calls an API", "we store it in a database"), redirect: "That's how — what does the user experience?"
+### Napkin sketch
 
-### 2b: Supporting Jobs
+*"How do these jobs fit together? What data does each one need, and who provides it?"*
 
-Ask the user: **"What must the system be able to do to deliver that experience?"**
+Sketch responsibilities and collaborations — napkin-level, not architecture. If the sketch starts going into detail (interfaces, patterns, specific technologies), stop — details belong in the code.
 
-Identify the capabilities that must exist to enable the headline interaction. Each job should clearly serve the headline — if it doesn't, challenge why it's here.
+## Write the spec
 
-Resist premature sophistication. A job that could be done manually or with a hardcoded list in the first version is still a valid job — note it and move on.
-
-### 2c: Napkin Sketch
-
-Ask the user: **"How do these jobs fit together? What data does each one need, and who provides it?"**
-
-Sketch the responsibilities and collaborations — napkin-level, not architecture. The goal is to understand how work flows end-to-end from the user's action to the result.
-
-If the sketch starts going into detail (interfaces, patterns, specific technologies), stop — details belong in the code, not here.
-
-## Phase 3: Synthesise
-
-Produce a **Spec** for this theory.
-
-Format:
-
-~~~markdown
-## [Theory Name]
-
-### Headline Interaction
-<what the user sees and does>
-
-### Supporting Jobs
-<list of capabilities, each with a one-line description of what it does and why the headline needs it>
-
-### Napkin Sketch
-<responsibilities and collaborations — how jobs relate, what data flows where>
-~~~
-
-### Where to write it
-
-**Local mode** — create `./specs/<theory-number>-<slug>.md`. Create the `specs/` directory if needed. Include a header block at the top:
-
-~~~markdown
-**Status:** Spec ready, awaiting /tdd
+<spec-template>
+**Status:** Spec ready, awaiting /spike (or /slice if no unknowns)
 **Part of:** <theories reference>
-**Improves:** <what aspect of the current state, referencing baseline metric>
+**Improves:** <aspect of current state, referencing baseline>
 **Builds on:** <optional>
 **Requires:** <deterministic | LLM: ... | API: ...>
 
 ## Description
+<one sentence on what the software can do after this theory>
 
-<one sentence — what the software can do after this theory>
-~~~
+## Headline Interaction
+<what the user sees and does>
 
-**GH mode** — edit the existing stub issue body with `gh issue edit <number> --body-file <tmpfile>`. Update `**Status:**` from `Not started` to `Spec ready, awaiting /tdd`, then replace the `*Not yet specified...*` placeholder with the full spec content.
+## Supporting Jobs
+<list of capabilities with one-line descriptions>
 
-Do not include code, test implementations, or technology choices.
+## Napkin Sketch
+<responsibilities, collaborations, data flow>
+</spec-template>
 
-## Phase 4: Validate
+No code, test implementations, or technology choices.
 
-Present the Spec and ask for sign-off.
+## Output
 
-Check the **Requires** field. If it contains dependencies flagged as `LLM:` or `API:` — or any technology the team hasn't used before — the next step is `/spike`. Otherwise, the next step is `/slice` to map the spec onto concrete modules in the codebase before TDD begins.
+Write to `./specs/<theory-number>-<slug>.md`, or edit the corresponding GitHub issue body.
 
-**Update `PROGRESS.md`** → *Current work*:
+## Next step
 
-~~~markdown
-- **Theory**: <number and name>
-- **Spec**: <path or GH issue URL>
-- **Status**: Spec written, ready for /spike (or /slice if no unknowns).
-~~~
+Check the **Requires** field:
 
-And *Next step*: `Run /spike on theory <number>` (or `Run /slice on theory <number>` if all technology choices are resolved).
+- Has `LLM:` or `API:` dependencies the team hasn't used before → run `/spike`
+- All deterministic or known tech → run `/slice` to map onto the codebase
 
-## Loop-back triggers
+## Loop-backs
 
-`/spec` is a middle loop. If specifying the theory reveals the theory itself is wrong, stop and go back to `/theories`:
-
-- The theory can't be described as a single thin slice — it's really two theories.
-- The theory doesn't clearly improve any aspect of the current state.
-- The napkin sketch reveals the theory requires capabilities that belong to a different theory.
-- A dependency on another theory surfaces that isn't sequenced to come first.
-
-Record the reason in `PROGRESS.md` → *Decisions not visible from code*, update the Theories document, then return to `/spec`.
+Go back to `/theories` if specifying reveals the theory can't be described as a single thin slice, doesn't clearly improve any aspect of current state, or depends on capabilities that belong to a different theory.
