@@ -37,7 +37,7 @@ Napkin-level, not architecture, and **not** the UI's layout.
 **Part of:** <theories reference>
 **Improves:** <aspect of current state, referencing baseline>
 **Builds on:** <optional>
-**Requires:** <deterministic | LLM: ... | API: ...>
+**Requires:** <api, llm, external service>
 
 ## Description
 <one sentence on what the software can do after this theory>

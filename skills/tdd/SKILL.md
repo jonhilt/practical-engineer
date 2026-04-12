@@ -31,27 +31,13 @@ Do not write any test until the user has approved this plan. Write it as a short
 
 ### 1. Interface changes
 
-Name the public API this theory will introduce or change — function signatures, HTTP routes, UI entry points. No internal types, no private helpers. What does the *outside* of the change look like?
+Name the thin interface this theory will introduce or change. Aim for deep modules, with thin interfaces which hide the implementation details,
 
-Confirm this is the shape the user expects. A wrong interface caught here costs nothing; caught after the tracer bullet, it costs a rewrite.
+Depending on the app this interface may be an API route, vertical slice handler, UI entry points. No internal types, no private helpers. What does the *outside* of the change look like?
 
-### 2. Examples (specification by example)
+Don't guess, get the user to confirm this is the shape the user expects. A wrong interface caught here costs nothing; caught after the tracer bullet, it costs a rewrite.
 
-Propose concrete input→output examples — Gojko Adzic's *specification by example*. *"For input X, the system produces Y."*
-
-Each example becomes a test assertion.
-
-Talk with the user to identify these examples, starting with the headline interaction and moving through supporting jobs. If the spec doesn't have examples, ask the user to give some. If the user can't give any, ask them to describe a specific instance of the behaviour in their real life. If they can't do that, ask them to imagine a future moment when the theory is working.
-
-If the user can't give a concrete example for a behaviour, that behaviour isn't defined clearly enough yet — loop back to `/spec`.
-
-### 3. Deep modules
-
-Note where in the slice **deep modules** (Ousterhout) make sense — modules with a **small interface hiding substantial implementation**. A function with two parameters and 200 lines of non-trivial logic behind it is deep. A class with twenty one-line methods that forward to a collaborator is shallow — cost without value.
-
-This is a *note about where to aim during refactoring*, not a list of classes to build up-front. Abstractions still emerge from duplication; deep modules are the shape you reach for *when* an abstraction is forced into being.
-
-### 4. Behaviours to test
+### 2. Behaviours to test
 
 List the observable behaviours this theory must exhibit, phrased from the outside:
 
@@ -62,7 +48,7 @@ The headline interaction from the spec is the first entry. Supporting jobs fan o
 
 ### Present and wait
 
-Show the user all four sections. Wait for explicit approval. Revise if asked. Do not proceed to Phase 2 without it.
+Show the user the plan. Wait for explicit approval. Revise if asked. Do not proceed to Phase 2 without it.
 
 ---
 
@@ -87,7 +73,7 @@ For each remaining behaviour on the Plan, run one cycle. Work through **one beha
 
 ### Red
 
-Write one failing test for one behaviour.
+Write **ONE** failing test for **ONE** behaviour.
 
 - **Assert first** — write the assertion, then work backwards
 - **One outcome per test** — exactly one assertion
@@ -102,7 +88,7 @@ Write the simplest code that makes the test pass. No more.
 
 Do not introduce abstractions (interfaces, base classes, patterns) until duplication or a failing test forces them.
 
-If tempted to mock, first ask whether a three-line real implementation would do. Full rules in [mocking.md](mocking.md); once a double is justified, [test-doubles.md](test-doubles.md) says which kind to reach for.
+Mock external dependencies ONLY, according to the rules in [mocking.md](mocking.md); once a double is justified, [test-doubles.md](test-doubles.md) says which kind to reach for.
 
 Run the checks. Type and lint issues in code you just wrote are part of green — fix them now.
 
