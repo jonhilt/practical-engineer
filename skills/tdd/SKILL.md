@@ -14,8 +14,6 @@ A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,
 
 Load the spec. It names the **headline interaction**, the **supporting jobs**, and a **system sketch** of the responsibilities and collaborations. You'll turn these into a concrete slice during Phase 1.
 
-If the spec has unresolved `LLM:` or `API:` dependencies with no Technology Decisions section, stop and run `/spike` first.
-
 Check the spec's **Requires** field to decide assertion style:
 
 - **Deterministic** — assert specific values
@@ -39,7 +37,11 @@ Confirm this is the shape the user expects. A wrong interface caught here costs 
 
 ### 2. Examples (specification by example)
 
-Ask the user for concrete input→output examples — Gojko Adzic's *specification by example*. *"For input X, the system produces Y."* Each example becomes a test assertion.
+Propose concrete input→output examples — Gojko Adzic's *specification by example*. *"For input X, the system produces Y."*
+
+Each example becomes a test assertion.
+
+Talk with the user to identify these examples, starting with the headline interaction and moving through supporting jobs. If the spec doesn't have examples, ask the user to give some. If the user can't give any, ask them to describe a specific instance of the behaviour in their real life. If they can't do that, ask them to imagine a future moment when the theory is working.
 
 If the user can't give a concrete example for a behaviour, that behaviour isn't defined clearly enough yet — loop back to `/spec`.
 
