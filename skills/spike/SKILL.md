@@ -1,6 +1,6 @@
 ---
 name: spike
-description: Resolve technology unknowns from a spec's Requires field before TDD. Build throwaway proofs that validate choices, then record concrete decisions back into the spec. Use after /spec, before /slice.
+description: Resolve technology unknowns from a spec's Requires field before TDD. Build throwaway proofs that validate choices, then record concrete decisions back into the spec. Use after /spec, before /tdd.
 argument-hint: "[optional: path to the Spec]"
 ---
 
@@ -59,12 +59,12 @@ Update the spec: resolve the `Requires` field from vague to specific, and append
 - **Integration detail:** <call pattern, response shape, config that matters for tests>
 </tech-decisions-template>
 
-Update spec status from `Spec ready, awaiting /spike` to `Spec ready, tech validated, awaiting /slice`.
+Update spec status from `Spec ready, awaiting /spike` to `Spec ready, tech validated, awaiting /tdd`.
 
 ## What a spike is NOT
 
 - **Not a prototype.** Don't build a mini version of the feature. Build the smallest thing that answers the question.
-- **Not architecture.** Module design emerges in `/slice` and `/tdd`.
+- **Not architecture.** Module design emerges in `/tdd`.
 - **Not permanent.** Spike code lives in `./spikes/` and is gitignored.
 - **Not exhaustive research.** Two or three options, quick decision, proof, move on.
 

@@ -4,7 +4,7 @@ Agent skills for building software through disciplined discovery, specification,
 
 ## The Skills
 
-Six skills, used in order:
+Five skills, used in order:
 
 | Skill | Purpose |
 |---|---|
@@ -12,16 +12,15 @@ Six skills, used in order:
 | **Theories** | Turn the Goals Document into testable theories — hypotheses about what might solve the problem |
 | **Spec** | Turn one theory into a clear brief — headline interaction, supporting jobs, and system sketch |
 | **Spike** | Resolve technology unknowns from the spec — research options, build throwaway proofs, record decisions |
-| **Slice** | Map the spec onto concrete modules in the codebase — identify the full vertical slice (UI, API, domain, data) and the entry point where the tracer bullet begins |
-| **TDD** | Implement one theory through strict outside-in TDD, driven by the slice plan |
+| **TDD** | Implement one theory through strict outside-in TDD — plan a slice of behaviours, fire a tracer bullet end-to-end, then loop Red/Green/Refactor |
 
-Each skill picks up where the previous one left off. Spike is skipped when all dependencies are deterministic and the team already knows the technology. Slice keeps TDD honest about the full stack — preventing it from quietly dropping the UI layer and drifting to backend-only tests. You don't have to use all six — start wherever your project is.
+Each skill picks up where the previous one left off. Spike is skipped when all dependencies are deterministic and the team already knows the technology. TDD's own Plan phase keeps the work honest about the full stack — surfacing interface changes, examples, and behaviours to test before any code is written — so a tracer bullet can prove the architecture end-to-end. You don't have to use all five — start wherever your project is.
 
 ## Getting started
 
 1. **New project or fuzzy idea** — run `/goals` to interview yourself until the problem is clear, then `/theories` to list what might solve it.
 2. **Already have a defined goal** — skip to `/theories`.
-3. **Building one theory** — for each theory you want to ship, run `/spec`, then `/spike` (if there are unknown technologies), then `/slice`, then `/tdd`.
+3. **Building one theory** — for each theory you want to ship, run `/spec`, then `/spike` (if there are unknown technologies), then `/tdd`.
 4. **Loop-backs are expected.** If a later skill reveals its input is wrong, it'll stop and send you back to the skill that needs correcting. Don't fight it.
 
 Skills detect whether you're using GitHub issues or local markdown files and write their artifacts accordingly.
@@ -35,11 +34,10 @@ Goals                         ← outermost: define the problem
   └─ Theories                 ← outer: sequence the theories
        └─ Spec                ← middle: specify one theory
             └─ Spike          ← tech scout: prove technology choices work
-                 └─ Slice     ← map spec onto codebase: modules + entry point
-                      └─ TDD  ← inner: Red → Green → Inspect → Refactor → Confirm
+                  └─ TDD      ← inner: Plan → Tracer bullet → Loop (Red → Green → Refactor)
 ```
 
-When a skill discovers its inputs are wrong, it stops and kicks back to the appropriate outer skill — TDD back to Slice when a missed module surfaces, Slice back to Spec when supporting jobs are too vague, Spec back to Theories when the theory can't be expressed as a single thin slice, and so on. Each skill's own file documents its specific loop-back triggers. Loop-backs are expected, not failures — each pass sharpens the inputs for the next.
+When a skill discovers its inputs are wrong, it stops and kicks back to the appropriate outer skill — TDD back to Spec when a behaviour can't be written without assumptions the spec doesn't cover, Spec back to Theories when the theory can't be expressed as a single thin slice, and so on. Each skill's own file documents its specific loop-back triggers. Loop-backs are expected, not failures — each pass sharpens the inputs for the next.
 
 ## Persistence
 
@@ -47,13 +45,9 @@ Skills write artifacts to local markdown files (`./goals.md`, `./theories.md`, `
 
 Session-level state (progress logs, blockers, parked questions) is intentionally **not** part of these skills. That belongs at the orchestrator layer — a Ralph loop, an agent runtime, or your own note-taking — so the skills stay stateless and composable.
 
-## Shared principles
+## Principles
 
-Concepts referenced by more than one skill live in `skills/principles/`:
-
-- [`tracer-bullets.md`](skills/principles/tracer-bullets.md) — Hunt & Thomas's tracer bullet concept (lean-but-complete production code that grows), referenced by slice and TDD.
-
-Principles used by a single skill live next to that skill's `SKILL.md` — e.g. `skills/tdd/shoc.md` (Gorman's SHOC), `skills/tdd/refactor-candidates.md` (smell→refactoring lookup), `skills/tdd/mocking.md` and `skills/tdd/test-doubles.md`.
+Each skill keeps its companion principle files alongside its `SKILL.md`. TDD has the most: `tracer-bullets.md` (Hunt & Thomas), `shoc.md` (Gorman's SHOC), `refactor-candidates.md` (smell→refactoring lookup), `mocking.md`, and `test-doubles.md`.
 
 ## Install
 

@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Implement one theory through strict outside-in TDD, driven by the vertical slice plan. Use after /slice to drive implementation from the concrete module plan, starting with a tracer bullet through every layer.
+description: Implement one theory through strict outside-in TDD in three phases — plan a slice of behaviours, fire a tracer bullet end-to-end, then loop Red/Green/Refactor through the remaining behaviours. Use after /spec (or /spike if the spec has technology unknowns).
 argument-hint: "[optional: path to the theory's Spec]"
 ---
 
@@ -12,10 +12,9 @@ A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,
 
 ## Read what you need
 
-Load the spec and its **Vertical Slice** section from `/slice`. The slice names the entry point, the modules the slice touches, and the supporting jobs to cover.
+Load the spec. It names the **headline interaction**, the **supporting jobs**, and a **system sketch** of the responsibilities and collaborations. You'll turn these into a concrete slice during Phase 1.
 
-- No Vertical Slice section? Stop and run `/slice` first.
-- Unresolved `LLM:` or `API:` dependencies with no Technology Decisions section? Stop and run `/spike` first.
+If the spec has unresolved `LLM:` or `API:` dependencies with no Technology Decisions section, stop and run `/spike` first.
 
 Check the spec's **Requires** field to decide assertion style:
 
@@ -67,16 +66,16 @@ Show the user all four sections. Wait for explicit approval. Revise if asked. Do
 
 ## Phase 2 — Tracer bullet
 
-Write **one test that confirms one assumption**: that the architecture chosen in the slice actually carries the headline behaviour end-to-end.
+Write **one test that confirms one assumption**: that the architecture implied by the Plan actually carries the headline behaviour end-to-end.
 
-- Start at the outer layer the slice names (UI or API for user-facing features)
-- Drive through every layer the slice lists
+- Start at the outermost layer the Plan's **interface changes** name — UI component, HTTP route, or CLI entry point
+- Drive through every layer the spec's **system sketch** identifies — front-end, request handling, domain logic, persistence if relevant
 - Real collaborators in-process; mock only at external boundaries
-- The production code is lean-but-complete: real structure, real error handling, real checks — just not fully functional yet. Not throwaway. See [../principles/tracer-bullets.md](../principles/tracer-bullets.md).
+- The production code is lean-but-complete: real structure, real error handling, real checks — just not fully functional yet. Not throwaway. See [tracer-bullets.md](tracer-bullets.md).
 
 Run the full TDD cycle from Phase 3 (Red → Green → Refactor → Checklist) on this one test.
 
-If the assumption doesn't hold — the architecture can't carry the behaviour without contortion — stop and loop back to `/slice`. Don't muscle through.
+If the assumption doesn't hold — the architecture can't carry the behaviour without contortion — stop and **re-plan** (return to Phase 1). If re-planning can't find a workable shape either, loop back to `/theories` — the theory itself may not fit. Don't muscle through.
 
 ---
 
@@ -141,6 +140,5 @@ If the theory didn't hold, loop back to `/theories` to revise.
 
 ## Loop-backs
 
-- **`/slice`** — if a test needs a module the slice plan didn't identify, or a layer (especially UI) was missed, or the tracer bullet's architectural assumption failed
-- **`/spec`** — if a test can't be written without assumptions the spec doesn't cover, or a behaviour/example is missing
-- **`/theories`** — if the theory is too large for one thin slice, or clearly doesn't improve the current state as intended
+- **`/spec`** — if a test can't be written without assumptions the spec doesn't cover, a behaviour/example is missing, or the system sketch is too vague to identify layers
+- **`/theories`** — if the theory is too large for one thin slice, clearly doesn't improve the current state as intended, or the tracer bullet shows it can't be carried end-to-end even after re-planning
