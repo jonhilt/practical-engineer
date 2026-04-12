@@ -1,6 +1,6 @@
 ---
 name: spike
-description: Resolve technology unknowns from a spec's Requires field before TDD. Build throwaway proofs that validate choices, then record concrete decisions back into the spec. Use after /spec, before /tdd.
+description: Resolve technology unknowns from a spec's Requires field before slicing. Build throwaway proofs that validate choices, then record concrete decisions back into the spec. Use after /spec, before /slice.
 argument-hint: "[optional: path to the Spec]"
 ---
 
@@ -43,7 +43,7 @@ After each spike runs, report:
 
 - **What we proved** — the specific question answered
 - **What we learned** — surprises, constraints, gotchas (rate limits, response shapes, latency, auth quirks)
-- **Decision** — the concrete choice, with enough detail for TDD to act on
+- **Decision** — the concrete choice, with enough detail for `/slice` and `/tdd` to act on
 
 ## Decide
 
@@ -55,16 +55,16 @@ Update the spec: resolve the `Requires` field from vague to specific, and append
 ### <Dependency name>
 - **Choice:** <provider/library/approach>
 - **Proved:** <what the spike confirmed>
-- **Constraints:** <rate limits, response shapes, auth model, latency — anything TDD needs>
-- **Integration detail:** <call pattern, response shape, config that matters for tests>
+- **Constraints:** <rate limits, response shapes, auth model, latency — anything slicing or TDD needs>
+- **Integration detail:** <call pattern, response shape, config that matters for slicing and tests>
 </tech-decisions-template>
 
-Update spec status from `Spec ready, awaiting /spike` to `Spec ready, tech validated, awaiting /tdd`.
+Update spec status from `Spec ready, awaiting /spike` to `Spec ready, tech validated, awaiting /slice`.
 
 ## What a spike is NOT
 
 - **Not a prototype.** Don't build a mini version of the feature. Build the smallest thing that answers the question.
-- **Not architecture.** Module design emerges in `/tdd`.
+- **Not architecture.** Module design emerges in `/slice`.
 - **Not permanent.** Spike code lives in `./spikes/` and is gitignored.
 - **Not exhaustive research.** Two or three options, quick decision, proof, move on.
 

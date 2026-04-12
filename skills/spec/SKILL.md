@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Turn one theory into a clear brief — headline interaction, supporting jobs, and system sketch. The bridge between a theory and TDD. Use after /theories to specify one theory at a time.
+description: Turn one theory into a clear brief — headline interaction, supporting jobs, and system sketch. The bridge between a theory and the slicing step. Use after /theories to specify one theory at a time.
 argument-hint: "[optional: path to Theories, or paste/describe the theory]"
 ---
 
@@ -33,7 +33,7 @@ Napkin-level, not architecture, and **not** the UI's layout.
 ## Write the spec
 
 <spec-template>
-**Status:** Spec ready, awaiting /spike (or /tdd if no unknowns)
+**Status:** Spec ready, awaiting /spike (or /slice if no unknowns)
 **Part of:** <theories reference>
 **Improves:** <aspect of current state, referencing baseline>
 **Builds on:** <optional>
@@ -52,7 +52,7 @@ Napkin-level, not architecture, and **not** the UI's layout.
 <system responsibilities, collaborations, data flow — not UI layout>
 </spec-template>
 
-No code, test implementations, technology choices, or physical UI design (wireframes, mockups, screen layouts, component choices). The spec is a logical description; physical design emerges in `/tdd`.
+No code, test implementations, technology choices, or physical UI design (wireframes, mockups, screen layouts, component choices). The spec is a logical description; module design emerges in `/slice`, and physical implementation in `/tdd`.
 
 ## Output
 

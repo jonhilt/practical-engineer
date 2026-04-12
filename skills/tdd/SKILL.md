@@ -1,23 +1,41 @@
 ---
 name: tdd
-description: Implement one theory through strict outside-in TDD in three phases — plan a slice of behaviours, fire a tracer bullet end-to-end, then loop Red/Green/Refactor through the remaining behaviours. Use after /spec (or /spike if the spec has technology unknowns).
-argument-hint: "[optional: path to the theory's Spec]"
+description: Implement one slice through strict outside-in TDD. Review any findings from previous cycles, then fire a tracer bullet end-to-end (first slice only) or loop Red/Green/Refactor through the slice's behaviours. Use after /slice, one slice at a time.
+argument-hint: "path to the slice file (e.g. specs/blog/slices/01-create-draft.md)"
 ---
 
-Implement one theory through strict outside-in TDD in three phases: **Plan → Tracer bullet → Loop**.
+Implement **one slice** through strict outside-in TDD. `/slice` has already done the planning — modules, responsibilities, behaviours, concrete examples. This skill executes that plan for one slice at a time.
 
 Every test verifies **behaviour**, not implementation. Behaviour is what the software does from the outside — inputs, outputs, observable effects through the public interface. Implementation is how it does it — internal structure, private state, which collaborator was called.
 
 A mortgage calculator test asserts *"£200,000 at 5% over 25 years produces £1,169.18 monthly"* — stable across any refactoring of the internals. **Do not write tests that are coupled to implementation.**
 
-## Read what you need
+## Read the slice
 
-Load the spec. It names the **headline interaction**, the **supporting jobs**, and a **system sketch** of the responsibilities and collaborations. You'll turn these into a concrete slice during Phase 1.
+Load the slice file passed as argument. It carries:
 
-Check the spec's **Requires** field to decide assertion style:
+- **Modules** — entry point, new modules with their responsibilities, existing modules being extended, external boundaries
+- **Behaviours** — each tagged `validation: automated | contract | human`, with Given/When/Then or contract assertions
+- **Seeds** — fixture inputs for contract assertions
+- **Frontmatter** — `tracer: true|false`, `depends_on`, current `status`
 
-- **Deterministic** — assert specific values
-- **Non-deterministic** (LLMs, AI, generative services) — assert **contracts**: structure, coverage, qualities, constraints any correct output would have regardless of specific words used
+Verify every slice listed in `depends_on` is `status: done`. If not, stop — slices must run in dependency order.
+
+## Review findings
+
+Before writing any test, open `specs/<theory>/findings.md`. If any entries are unreviewed, present them to the user and wait for input. Three outcomes:
+
+1. **Not a real issue** — mark the entry reviewed (move under `## Resolved`), proceed.
+2. **User amends a pending slice file by hand** — mark the entry reviewed, proceed with the (possibly edited) current slice.
+3. **User decides to re-slice** — exit. They'll run `/slice`, which reads findings and produces a new plan.
+
+On a happy-path run (no unreviewed findings) this step is invisible. When findings exist, it's the tripwire that catches drift before a Ralph loop burns through slices under a wrong assumption.
+
+Mark the slice `status: in_progress`.
+
+## Read the code
+
+Read the modules the slice names, as they currently exist on the theory branch. Previous slices may have added types, helpers, or conventions the slice artifact couldn't know about. The slice tells you *where* to look; the current code tells you *what* is there.
 
 ## Discover tooling
 
@@ -25,60 +43,39 @@ Identify the project's automated feedback loops — test runner, type checker, l
 
 ---
 
-## Phase 1 — Plan (stop for approval)
+## Tracer slice — fire the tracer bullet
 
-Do not write any test until the user has approved this plan. Write it as a short message back to the user with four sections.
+**Only if `tracer: true` in the slice frontmatter.** Otherwise skip to the Incremental loop.
 
-### 1. Interface changes
+Pick the slice's **first behaviour** — the one that cuts end-to-end through every layer the system sketch identifies. Write one test for it.
 
-Name the thin interface this theory will introduce or change. Aim for deep modules, with thin interfaces which hide the implementation details,
-
-Depending on the app this interface may be an API route, vertical slice handler, UI entry points. No internal types, no private helpers. What does the *outside* of the change look like?
-
-Don't guess, get the user to confirm this is the shape the user expects. A wrong interface caught here costs nothing; caught after the tracer bullet, it costs a rewrite.
-
-### 2. Behaviours to test
-
-List the observable behaviours this theory must exhibit, phrased from the outside:
-
-- Good: *"When a user submits the form with a valid email, they see a confirmation screen."*
-- Bad: *"UserService.save is called with the form data."*
-
-The headline interaction from the spec is the first entry. Supporting jobs fan out from there. This list is a draft — Beck's *"running conversation with yourself"* — items will be added, reordered, or deleted as cycles teach you what's needed.
-
-### Present and wait
-
-Show the user the plan. Wait for explicit approval. Revise if asked. Do not proceed to Phase 2 without it.
-
----
-
-## Phase 2 — Tracer bullet
-
-Write **one test that confirms one assumption**: that the architecture implied by the Plan actually carries the headline behaviour end-to-end.
-
-- Start at the outermost layer the Plan's **interface changes** name — UI component, HTTP route, or CLI entry point
-- Drive through every layer the spec's **system sketch** identifies — front-end, request handling, domain logic, persistence if relevant
-- Real collaborators in-process; mock only at external boundaries
+- Start at the outermost layer the slice's **entry point** names — UI component, HTTP route, CLI entry
+- Drive through every layer the slice touches — front-end, request handling, domain logic, persistence
+- Real collaborators in-process; mock only at external boundaries (see [mocking.md](mocking.md))
 - The production code is lean-but-complete: real structure, real error handling, real checks — just not fully functional yet. Not throwaway. See [tracer-bullets.md](tracer-bullets.md).
 
-Run the full TDD cycle from Phase 3 (Red → Green → Refactor → Checklist) on this one test.
+Run the full cycle (Red → Green → Refactor → Checklist) on this one test using the rules in the Incremental loop below.
 
-If the assumption doesn't hold — the architecture can't carry the behaviour without contortion — stop and **re-plan** (return to Phase 1). If re-planning can't find a workable shape either, loop back to `/theories` — the theory itself may not fit. Don't muscle through.
+If the tracer fails — the architecture implied by the slice can't carry the behaviour without contortion — stop. Append a finding to `specs/<theory>/findings.md` describing what broke, and exit. Loop back to `/slice` to re-plan; if re-slicing can't find a workable shape, loop back to `/theories`.
+
+Once the tracer passes, continue through the slice's remaining behaviours using the Incremental loop.
 
 ---
 
-## Phase 3 — Incremental loop
+## Incremental loop
 
-For each remaining behaviour on the Plan, run one cycle. Work through **one behaviour at a time**. Do not combine steps.
+For each remaining behaviour in the slice, run one cycle. Work through **one behaviour at a time**. Do not combine steps.
 
 ### Red
 
-Write **ONE** failing test for **ONE** behaviour.
+Write **ONE** failing test for **ONE** behaviour, using the slice's Given/When/Then or contract assertion verbatim as the spec.
 
 - **Assert first** — write the assertion, then work backwards
 - **One outcome per test** — exactly one assertion
 - **Usage-driven** — reference the thing in the test before it exists; the compiler/runtime error is the signal to create it
 - **Behaviour, not implementation**
+- **For `validation: contract` behaviours** — write the structural assertion against the slice's seed fixture, not a specific output value
+- **For `validation: human` behaviours** — do not write a test. Note the behaviour in the completion summary for the theory-level validation step.
 
 Run the checks. Confirm the test fails for the *right reason* — a type error or lint violation is not the right reason.
 
@@ -109,24 +106,47 @@ Tick each box before declaring the cycle done. Any unchecked box is a defect —
 - [ ] **Test would survive an internal refactor** — rename a private method, extract a helper, swap a data structure: the test still passes
 - [ ] **Production code is minimal** — no speculative features, no hypothetical future parameters, no abstractions without a second forcing test
 - [ ] **Mocks (if any) cross external boundaries only** — no in-process collaborators doubled
+- [ ] **Any mid-cycle discovery about *other* slices** — captured in `findings.md`, tagged with this slice id, not written into any slice file
 
 Report findings to the user: behaviour implemented, test written, refactorings applied, checklist state.
 
 ---
 
+## Capturing findings
+
+While working this slice, if you notice something about **other** slices — a missing behaviour, a redundancy, a wrong module boundary, an interface tension — **do not edit those slice files**. Append an entry to `specs/<theory>/findings.md`:
+
+<finding-template>
+## <ISO timestamp> — from <this slice id>
+
+**Observation:** <what you noticed>
+**Suggests:** <which slice is affected, what might need to change>
+**Status:** unreviewed
+</finding-template>
+
+Slice files are immutable. Findings are the only channel for cross-slice feedback. The user reviews them at the start of the next `/tdd` cycle.
+
+Literal values inside the *current* slice that turn out to be wrong (e.g. an expected mortgage payment that doesn't match reality) are findings too — do not silently correct them in the slice file. Exit with a finding, let the user decide.
+
 ## Completion
 
-When the headline interaction and all planned behaviours are covered by passing tests, summarise what was built, any design patterns that emerged, and remaining concerns.
+When all the slice's behaviours are covered by passing tests (or noted as `validation: human`):
 
-**Final mock audit** — any remaining doubles should cross external boundaries or be explicitly deferred to a later theory. If in-process collaborators are mocked, the tracer bullet leaked into horizontal layering — revisit.
+- Mark the slice `status: done` in its frontmatter
+- Commit on the theory branch with a message naming the slice
+- **Final mock audit** — any remaining doubles should cross external boundaries. If in-process collaborators are mocked, the tracer leaked into horizontal layering — add a finding.
+- Summarise: behaviours implemented, design patterns that emerged, `validation: human` behaviours remaining for real-world validation
 
-**Close out** — update the spec status to `Done`. If using GitHub issues, close the theory issue and tick it in the parent goal's Theories checklist.
+If this was the **last pending slice** in the theory:
 
-**Validate in the real world** — prompt the user: *"This theory's code is complete — but passing tests only prove the code works as designed, not that the theory is right. Can you validate it with real usage? Does the 'we'll know it worked when' outcome hold?"*
+- Propose merging `theory/<theory-slug>` back to main
+- Update the spec status to `Done`
+- **Validate in the real world** — prompt the user: *"This theory's code is complete — but passing tests only prove the code works as designed, not that the theory is right. Can you validate it with real usage? Does the 'we'll know it worked when' outcome hold? And check any `validation: human` behaviours."*
 
 If the theory didn't hold, loop back to `/theories` to revise.
 
 ## Loop-backs
 
-- **`/spec`** — if a test can't be written without assumptions the spec doesn't cover, a behaviour/example is missing, or the system sketch is too vague to identify layers
-- **`/theories`** — if the theory is too large for one thin slice, clearly doesn't improve the current state as intended, or the tracer bullet shows it can't be carried end-to-end even after re-planning
+- **`/slice`** — if the tracer fails, if a slice's modules turn out to be wrong mid-cycle, or if findings review decides the slice plan needs revising
+- **`/spec`** — if a behaviour can't be written without assumptions the spec doesn't cover, or if the system sketch itself is wrong (e.g. tracer passed but a later slice reveals the architecture can't accommodate it)
+- **`/theories`** — if the theory is too large for its slices, clearly doesn't improve the current state as intended, or re-slicing still can't find a workable shape
