@@ -31,6 +31,7 @@ When the user runs dry, read the theories back and ask: *"Is that the set, or is
 
 ## Write the Theories document
 
+```xml
 <theories-template>
 ## Theories
 
@@ -44,6 +45,7 @@ When the user runs dry, read the theories back and ask: *"Is that the set, or is
 ### 2. <name>
 ...
 </theories-template>
+```
 
 No implementation details, technical architecture, UI design, test cases, or time estimates.
 
