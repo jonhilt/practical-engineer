@@ -101,6 +101,7 @@ Do not write files until the user has approved the slice set and the order.
 
 Create `specs/<theory-slug>/slices/NN-<slice-slug>.md` for each slice. Format:
 
+```xml
 <slice-template>
 ---
 slice: NN-<slug>
@@ -139,7 +140,7 @@ One-line summary of what this slice delivers.
 
 - **<fixture name>**: <value>
 </slice-template>
-
+```
 ### Set up the theory branch
 
 If a branch `theory/<theory-slug>` does not exist, create it from `main`. Commit the slice files and an empty `specs/<theory-slug>/findings.md` on this branch. Subsequent `/tdd` runs append commits to the same branch; it merges to main when the theory is complete.
