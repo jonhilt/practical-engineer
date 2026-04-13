@@ -30,6 +30,7 @@ Be honest. Don't force causes into the software bucket.
 
 ## Write the Goals Document
 
+```xml
 <goals-template>
 ## Problem Statement
 Who, what, why — one focused problem, one sentence.
@@ -41,7 +42,7 @@ What happens today. How bad it is. Any baseline data or observations.
 - 🔧 Software-solvable: ...
 - 🧠 Not a software problem: ...
 </goals-template>
-
+```
 No features, solutions, user stories, technical architecture, or success criteria. Success criteria belong to individual theories — they come later.
 
 ## Output
