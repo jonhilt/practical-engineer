@@ -32,6 +32,7 @@ Napkin-level, not architecture, and **not** the UI's layout.
 
 ## Write the spec
 
+```xml
 <spec-template>
 **Status:** Spec ready, awaiting /spike (or /slice if no unknowns)
 **Part of:** <theories reference>
@@ -51,6 +52,7 @@ Napkin-level, not architecture, and **not** the UI's layout.
 ## System Sketch
 <system responsibilities, collaborations, data flow — not UI layout>
 </spec-template>
+```
 
 No code, test implementations, technology choices, or physical UI design (wireframes, mockups, screen layouts, component choices). The spec is a logical description; module design emerges in `/slice`, and physical implementation in `/tdd`.
 
